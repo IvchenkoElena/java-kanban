@@ -1,3 +1,14 @@
+//Сергей, добрый день, спасибо за подробные объснения.
+// Вроде бы все доделала.
+// Не до конца только поняла, что именно надо проверять на null в методе определения статуса эпика.
+// И как обраотать вариант, если будет null.
+
+import Model.Task;
+import Servise.TaskManager;
+import Model.Epic;
+import Model.Subtask;
+import Model.TaskStatus;
+
 import java.util.ArrayList;
 
 public class Main {
@@ -7,57 +18,65 @@ public class Main {
 
         TaskManager taskManager = new TaskManager();
 
-        taskManager.createTask("Задача 1", "Купить продукты", TaskStatus.NEW);
-        taskManager.createTask("Задача 2", "Вынести мусор", TaskStatus.NEW);
+        Task task1 = new Task("Задача 1", "Купить продукты");
+        taskManager.createTask(task1);
+        Task task2 = new Task("Задача 2", "Вынести мусор");
+        taskManager.createTask(task2);
 
-        Subtask wall = taskManager.createSubtask("Стены", "Шпаклюем и штукатурим", TaskStatus.NEW);
-        Subtask furniture = taskManager.createSubtask("Мебель", "Купить и собрать", TaskStatus.NEW);
-        ArrayList<Subtask> list1 = new ArrayList<>();
-        list1.add(wall);
-        list1.add(furniture);
-        Epic renovation = taskManager.createEpic("Ремонт","Сделать ремонт", list1);
-        wall.setMyEpic(renovation);
-        furniture.setMyEpic(renovation);
+        Epic renovation = new Epic("Ремонт","Сделать ремонт");
+        taskManager.createEpic(renovation);
+        int renovationId = renovation.getId();
+        Subtask wall = new Subtask("Стены", "Шпаклюем и штукатурим", renovationId);
+        taskManager.createSubtask(wall);
+        Subtask furniture = new Subtask("Мебель", "Купить и собрать", renovationId);
+        taskManager.createSubtask(furniture);
 
-        Subtask tickets = taskManager.createSubtask("Билеты", "Найти выгодные даты", TaskStatus.NEW);
-        ArrayList<Subtask> list2 = new ArrayList<>();
-        list2.add(tickets);
-        Epic vacation = taskManager.createEpic("Отпуск","Запланировать путешествие", list2);
-        tickets.setMyEpic(vacation);
-
-        System.out.println(taskManager.tasks.toString());
-        System.out.println(taskManager.subtasks.toString());
-        System.out.println(taskManager.epics.toString());
+        Epic vacation = new Epic("Отпуск","Запланировать путешествие");
+        taskManager.createEpic(vacation);
+        int vacationId = vacation.getId();
+        Subtask tickets = new Subtask("Билеты", "Найти выгодные даты", vacationId);
+        taskManager.createSubtask(tickets);
 
 
-        taskManager.updateTask("Задача 1", "Купить продукты", 1, TaskStatus.DONE);
-        taskManager.updateTask("Задача 2", "Вынести мусор", 2,  TaskStatus.IN_PROGRESS);
+        System.out.println(taskManager.getAllTasksList().toString());
+        System.out.println(taskManager.getAllEpicsList().toString());
+        System.out.println(taskManager.getAllSubtasksList().toString());
 
-        wall = taskManager.updateSubtask("Стены", "Шпаклюем и штукатурим", 3, TaskStatus.DONE);
-        furniture = taskManager.updateSubtask("Мебель", "Купить и собрать", 4, TaskStatus.IN_PROGRESS);
-        list1 = new ArrayList<>();
-        list1.add(wall);
-        list1.add(furniture);
-        renovation = taskManager.updateEpic("Ремонт","Сделать ремонт", 5, list1);
-        wall.setMyEpic(renovation);
-        furniture.setMyEpic(renovation);
 
-        tickets = taskManager.updateSubtask("Билеты", "Найти выгодные даты", 6, TaskStatus.DONE);
-        list2 = new ArrayList<>();
-        list2.add(tickets);
-        vacation = taskManager.updateEpic("Отпуск","Запланировать путешествие",7, list2);
-        tickets.setMyEpic(vacation);
+        Task newTask1 = new Task("Задача 1", "Купить продукты");
+        newTask1.setStatus(TaskStatus.DONE);
+        newTask1.setId(1);
+        taskManager.updateTask(newTask1);
+        Task newTask2 = new Task("Задача 2", "Вынести мусор");
+        newTask2.setStatus(TaskStatus.IN_PROGRESS);
+        newTask2.setId(2);
+        taskManager.updateTask(task2);
 
-        System.out.println(taskManager.tasks.toString());
-        System.out.println(taskManager.subtasks.toString());
-        System.out.println(taskManager.epics.toString());
+        Subtask newWall = new Subtask("Стены", "Красим", renovationId);
+        newWall.setStatus(TaskStatus.IN_PROGRESS);
+        newWall.setId(4);
+        taskManager.updateSubtask(newWall);
+        Subtask newFurniture = new Subtask("Мебель", "Заказать", renovationId);
+        newFurniture.setStatus(TaskStatus.DONE);
+        newFurniture.setId(5);
+        taskManager.updateSubtask(newFurniture);
+
+
+        Subtask newTickets = new Subtask("Билеты", "Найти выгодные даты", vacationId);
+        newTickets.setStatus(TaskStatus.DONE);
+        newTickets.setId(7);
+        taskManager.updateSubtask(newTickets);
+
+        System.out.println(taskManager.getAllTasksList().toString());
+        System.out.println(taskManager.getAllEpicsList().toString());
+        System.out.println(taskManager.getAllSubtasksList().toString());
 
 
         taskManager.deleteTaskById(2);
-        taskManager.deleteEpicById(5);
+        taskManager.deleteEpicById(6);
 
-        System.out.println(taskManager.getAllTasksList());
-        System.out.println(taskManager.getAllSubtasksList());
-        System.out.println(taskManager.getAllEpicsList());
+        System.out.println(taskManager.getAllTasksList().toString());
+        System.out.println(taskManager.getAllEpicsList().toString());
+        System.out.println(taskManager.getAllSubtasksList().toString());
     }
 }
