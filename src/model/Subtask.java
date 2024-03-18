@@ -1,7 +1,7 @@
-package Model;
+package model;
 
 public class Subtask extends Task {
-    int myEpicId;
+    private int myEpicId;
 
     public Subtask(String name, String description, int myEpicId) {
         super(name, description);
@@ -10,10 +10,6 @@ public class Subtask extends Task {
 
     public int getMyEpicId() {
         return myEpicId;
-    }
-
-    public void setMyEpicId(int myEpicId) {
-        this.myEpicId = myEpicId;
     }
 
     @Override

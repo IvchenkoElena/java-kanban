@@ -1,15 +1,11 @@
-//Сергей, добрый день, спасибо за подробные объснения.
-// Вроде бы все доделала.
-// Не до конца только поняла, что именно надо проверять на null в методе определения статуса эпика.
-// И как обраотать вариант, если будет null.
+//Сергей, добрый день, внесла правки.
 
-import Model.Task;
-import Servise.TaskManager;
-import Model.Epic;
-import Model.Subtask;
-import Model.TaskStatus;
 
-import java.util.ArrayList;
+import model.Task;
+import service.TaskManager;
+import model.Epic;
+import model.Subtask;
+import model.TaskStatus;
 
 public class Main {
 
@@ -50,7 +46,7 @@ public class Main {
         Task newTask2 = new Task("Задача 2", "Вынести мусор");
         newTask2.setStatus(TaskStatus.IN_PROGRESS);
         newTask2.setId(2);
-        taskManager.updateTask(task2);
+        taskManager.updateTask(newTask2);
 
         Subtask newWall = new Subtask("Стены", "Красим", renovationId);
         newWall.setStatus(TaskStatus.IN_PROGRESS);

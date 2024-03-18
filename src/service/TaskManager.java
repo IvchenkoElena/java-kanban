@@ -1,19 +1,18 @@
-package Servise;
-import Model.Epic;
-import Model.Subtask;
-import Model.Task;
-import Model.TaskStatus;
+package service;
+import model.Epic;
+import model.Subtask;
+import model.Task;
+import model.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class TaskManager {
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
     private HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    private int id = 0;
 
-    int id = 0;
     private int generateId() {
         return ++id;
     }
@@ -24,7 +23,9 @@ public class TaskManager {
     }
 
     public void updateTask(Task task){
-        tasks.put(task.getId(), task);
+        if (tasks.containsKey(task.getId())){
+            tasks.put(task.getId(), task);
+        }
     }
 
     public ArrayList<Task> getAllTasksList() {
@@ -47,19 +48,20 @@ public class TaskManager {
     public void createEpic(Epic epic){
         epic.setId(generateId());
         epics.put(epic.getId(), epic);
-        epic.setStatus(determineEpicStatus(id));
+        determineEpicStatus(id);
     }
 
     public void updateEpic(Epic epic){
-        epics.put(epic.getId(), epic);
-        epic.setStatus(determineEpicStatus(id));
+        if (epics.containsKey(epic.getId())){
+            epics.put(epic.getId(), epic);
+            determineEpicStatus(id);
+        }
     }
 
-    private TaskStatus determineEpicStatus(int id) {
+    private void determineEpicStatus(int id) {
         Epic epic = epics.get(id);
         if (epic == null){
-            //не до конца поняла, на null нужно проверить Эпик?
-            // и что сделать, если он будет равен null?
+            return;
         }
         TaskStatus status;
         int isNew = 0;
@@ -67,16 +69,13 @@ public class TaskManager {
         boolean isAllNew = false;
         boolean isAllDone = false;
         ArrayList<Integer> mySubtasksIdList = epic.getMySubtasksIdList();
-        if (mySubtasksIdList != null){ //или на null надо было проверить список id сабтасок?
-            // и как обработать вариант, если он Null?
-            for (Integer i : mySubtasksIdList) {
-                Subtask subtask = subtasks.get(i);
-                if (subtask.getStatus().equals(TaskStatus.valueOf("NEW"))){
-                    isNew++;
-                }
-                if (subtask.getStatus().equals(TaskStatus.valueOf("DONE"))){
-                    isDone++;
-                }
+        for (Integer subtaskId : mySubtasksIdList) {
+            Subtask subtask = subtasks.get(subtaskId);
+            if (subtask.getStatus().equals(TaskStatus.valueOf("NEW"))){
+                isNew++;
+            }
+            if (subtask.getStatus().equals(TaskStatus.valueOf("DONE"))){
+                isDone++;
             }
         }
         if (isNew == mySubtasksIdList.size()){
@@ -85,14 +84,13 @@ public class TaskManager {
         if (isDone == mySubtasksIdList.size()){
             isAllDone = true;
         }
-        if ((mySubtasksIdList.isEmpty()) || (isAllNew)){ //может тут вместо isEmpty нужно предусмотреть вариант Null?
-            status = TaskStatus.valueOf("NEW");
+        if ((mySubtasksIdList.isEmpty()) || (isAllNew)){
+            epic.setStatus(TaskStatus.valueOf("NEW"));
         } else if (isAllDone) {
-            status = TaskStatus.valueOf("DONE");
+            epic.setStatus(TaskStatus.valueOf("DONE"));
         } else {
-            status = TaskStatus.valueOf("IN_PROGRESS");
+            epic.setStatus(TaskStatus.valueOf("IN_PROGRESS"));
         }
-        return status;
     }
 
     public ArrayList<Epic> getAllEpicsList() {
@@ -109,9 +107,9 @@ public class TaskManager {
     }
 
     public void deleteEpicById(int id) {
-        ArrayList<Integer> list = getEpicById(id).getMySubtasksIdList();
-        for (Integer i : list){
-            deleteSubtaskById(i);
+        ArrayList<Integer> mySubtaskIdList = getEpicById(id).getMySubtasksIdList();
+        for (Integer subtaskId : mySubtaskIdList){
+            subtasks.remove(subtaskId);
         }
         epics.remove(id);
     }
@@ -120,16 +118,15 @@ public class TaskManager {
         subtask.setId(generateId());
         subtasks.put(subtask.getId(), subtask);
         Epic myEpic = epics.get(subtask.getMyEpicId());
-        ArrayList<Integer> subtasksIdList = myEpic.getMySubtasksIdList();
-        subtasksIdList.add(id);
-        myEpic.setMySubtasksIdList(subtasksIdList);
-        myEpic.setStatus(determineEpicStatus(subtask.getMyEpicId()));
+        myEpic.getMySubtasksIdList().add(id);
+        determineEpicStatus(subtask.getMyEpicId());
     }
 
     public void updateSubtask(Subtask subtask){
-        subtasks.put(subtask.getId(), subtask);
-        Epic myEpic = epics.get(subtask.getMyEpicId());
-        myEpic.setStatus(determineEpicStatus(subtask.getMyEpicId()));
+        if (subtasks.containsKey(subtask.getId())) {
+            subtasks.put(subtask.getId(), subtask);
+            determineEpicStatus(subtask.getMyEpicId());
+        }
     }
 
     public ArrayList<Subtask> getAllSubtasksList() {
@@ -138,6 +135,9 @@ public class TaskManager {
 
     public void deleteAllSubtasks() {
         subtasks.clear();
+        for (Integer id : epics.keySet()) {
+            epics.get(id).getMySubtasksIdList().clear();
+        }
     }
 
     public Subtask getSubtaskById(int id) {
@@ -145,6 +145,9 @@ public class TaskManager {
     }
 
     public void deleteSubtaskById(int id) {
+        if (subtasks.containsKey(id)) {
+            epics.get(subtasks.get(id).getMyEpicId()).getMySubtasksIdList().remove(Integer.valueOf(id));
+        }
         subtasks.remove(id);
     }
 
@@ -152,8 +155,8 @@ public class TaskManager {
         Epic epic = epics.get(id);
         ArrayList<Integer> mySubtasksIdList = epic.getMySubtasksIdList();
         ArrayList<Subtask> mySubtasksList = new ArrayList<>();
-        for (Integer i : mySubtasksIdList){
-            mySubtasksList.add(subtasks.get(i));
+        for (Integer subtaskId : mySubtasksIdList){
+            mySubtasksList.add(subtasks.get(subtaskId));
         }
     return mySubtasksList;
     }
