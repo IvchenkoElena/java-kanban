@@ -8,7 +8,6 @@ public class Task {
     private int id;
     private Status status;
 
-
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
