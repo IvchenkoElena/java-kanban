@@ -1,5 +1,6 @@
 import model.Epic;
 import model.Subtask;
+import model.Task;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import service.Managers;
@@ -29,9 +30,14 @@ class SubtaskTest {
 
     @Test
     void subtasksWithSameIdAreEqual() {
-        int id = 2;
-        Subtask subtaskOne = taskManager.getSubtaskById(id);
-        Subtask subtaskTwo = taskManager.getSubtaskById(id);
+
+        int epicId = 15;
+
+        Subtask subtaskOne = new Subtask("Тестовая подзадача 1", "Описание тестовой подзадачи 1", epicId);
+        subtaskOne.setId(8);
+        Subtask subtaskTwo = new Subtask("Тестовая подзадача 2", "Описание тестовой подзадачи 2", epicId);
+        subtaskTwo.setId(8);
+
         assertEquals(subtaskOne, subtaskTwo);
     }
 

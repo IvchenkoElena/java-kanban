@@ -14,6 +14,13 @@ public class Main {
 
         final TaskManager taskManager = Managers.getDefault();
 
+        Task taskOne = new Task("Задача 1", "Купить продукты");
+        taskOne.setId(7);
+        Task taskTwo = new Task("Задача 2", "Вынести мусор");
+        taskTwo.setId(7);
+        System.out.println(taskOne);
+        System.out.println(taskTwo);
+
         Task task1 = new Task("Задача 1", "Купить продукты");
         taskManager.createTask(task1);
         Task task2 = new Task("Задача 2", "Вынести мусор");
@@ -34,6 +41,11 @@ public class Main {
         taskManager.createSubtask(tickets);
 
         taskManager.getTaskById(1);
+
+        printAllTasks(taskManager);
+
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(9);
 
         printAllTasks(taskManager);
 

@@ -13,13 +13,11 @@ class TaskTest {
 
     @Test
     void tasksWithSameIdAreEqual() {
-        Task task1 = new Task("Задача 1", "Купить продукты");
-        taskManager.createTask(task1);
-        Task task2 = new Task("Задача 2", "Вынести мусор");
-        taskManager.createTask(task2);
-        int id = 2;
-        Task taskOne = taskManager.getTaskById(id);
-        Task taskTwo = taskManager.getTaskById(id);
+        Task taskOne = new Task("Задача 1", "Купить продукты");
+        taskOne.setId(7);
+        Task taskTwo = new Task("Задача 2", "Вынести мусор");
+        taskTwo.setId(7);
+
         assertEquals(taskOne, taskTwo);
     }
 }

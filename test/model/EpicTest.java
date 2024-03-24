@@ -32,9 +32,12 @@ class EpicTest {
 
     @Test
     void epicsWithSameIdAreEqual() {
-        int id = 1;
-        Epic epicOne = taskManager.getEpicById(id);
-        Epic epicTwo = taskManager.getEpicById(id);
+        int id = 20;
+        Epic epicOne = new Epic("Тестовый эпик 1","Описание тестового эпика 1");
+        epicOne.setId(id);
+        Epic epicTwo = new Epic("Тестовый эпик 2","Описание тестового эпика 2");
+        epicTwo.setId(id);
+
         assertEquals(epicOne, epicTwo);
     }
 
