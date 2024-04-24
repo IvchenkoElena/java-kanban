@@ -21,6 +21,11 @@ public class Main {
         System.out.println(taskOne);
         System.out.println(taskTwo);
 
+        taskManager.getTaskById(7);
+
+        System.out.println("первый вызов принта");
+        printAllTasks(taskManager);
+
         Task task1 = new Task("Задача 1", "Купить продукты");
         taskManager.createTask(task1);
         Task task2 = new Task("Задача 2", "Вынести мусор");
@@ -41,12 +46,18 @@ public class Main {
         taskManager.createSubtask(tickets);
 
         taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
 
+        System.out.println("второй вызов принта");
         printAllTasks(taskManager);
 
-        taskManager.getTaskById(2);
+
+        taskManager.getTaskById(1);
+
+        System.out.println("вызываем несуществующую задачу:");
         taskManager.getTaskById(9);
 
+        System.out.println("третий вызов принта");
         printAllTasks(taskManager);
 
         Task newTask1 = new Task("Задача 1", "Купить много продуктов");
@@ -74,6 +85,7 @@ public class Main {
 
         taskManager.getEpicById(3);
 
+        System.out.println("четверый вызов принта");
         printAllTasks(taskManager);
 
         taskManager.deleteTaskById(2);
@@ -81,6 +93,7 @@ public class Main {
 
         taskManager.getSubtaskById(5);
 
+        System.out.println("пятый вызов принта");
         printAllTasks(taskManager);
     }
 

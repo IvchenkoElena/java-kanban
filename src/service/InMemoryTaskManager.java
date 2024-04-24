@@ -49,6 +49,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
+        for (Task task : tasks.values()){
+            int id = task.getId();
+            historyManager.remove(id);
+        }
         tasks.clear();
     }
 
@@ -60,6 +64,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTaskById(int id) {
+        historyManager.remove(id);
         tasks.remove(id);
     }
 
@@ -122,6 +127,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllEpics() {
+        for (Epic epic : epics.values()){
+            int id = epic.getId();
+            historyManager.remove(id);
+        }
+        for (Subtask subtask : subtasks.values()){
+            int id = subtask.getId();
+            historyManager.remove(id);
+        }
         epics.clear();
         subtasks.clear();
     }
@@ -136,8 +149,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteEpicById(int id) {
         List<Integer> mySubtaskIdList = epics.get(id).getMySubtasksIdList();
         for (Integer subtaskId : mySubtaskIdList){
+            historyManager.remove(subtaskId);
             subtasks.remove(subtaskId);
         }
+        historyManager.remove(id);
         epics.remove(id);
     }
 
@@ -166,6 +181,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllSubtasks() {
+        for (Subtask subtask : subtasks.values()){
+            int id = subtask.getId();
+            historyManager.remove(id);
+        }
         subtasks.clear();
         for (Integer id : epics.keySet()) {
             epics.get(id).getMySubtasksIdList().clear();
@@ -183,6 +202,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtasks.containsKey(id)) {
             epics.get(subtasks.get(id).getMyEpicId()).getMySubtasksIdList().remove(Integer.valueOf(id));
         }
+        historyManager.remove(id);
         subtasks.remove(id);
     }
 
