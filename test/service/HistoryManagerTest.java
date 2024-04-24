@@ -3,7 +3,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.HistoryManager;
 import service.Managers;
+
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 // Сергей,здравствуте. Есть странности с тестами, иногда они падают, иногда проходят. билась, билпсь, не нашла, в чем дело.
@@ -17,7 +19,7 @@ class HistoryManagerTest {
     private HistoryManager historyManager;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         historyManager = Managers.getDefaultHistory();
     }
 

@@ -1,6 +1,5 @@
 import model.Epic;
 import model.Subtask;
-import model.Task;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import service.Managers;
@@ -15,7 +14,7 @@ class EpicTest {
 
     @BeforeAll
     static void beforeAll() {
-        Epic renovation = new Epic("Ремонт","Сделать ремонт");
+        Epic renovation = new Epic("Ремонт", "Сделать ремонт");
         taskManager.createEpic(renovation);
         int renovationId = renovation.getId();
         Subtask wall = new Subtask("Стены", "Шпаклюем и штукатурим", renovationId);
@@ -23,7 +22,7 @@ class EpicTest {
         Subtask furniture = new Subtask("Мебель", "Купить и собрать", renovationId);
         taskManager.createSubtask(furniture);
 
-        Epic vacation = new Epic("Отпуск","Запланировать путешествие");
+        Epic vacation = new Epic("Отпуск", "Запланировать путешествие");
         taskManager.createEpic(vacation);
         int vacationId = vacation.getId();
         Subtask tickets = new Subtask("Билеты", "Найти выгодные даты", vacationId);
@@ -33,9 +32,9 @@ class EpicTest {
     @Test
     void epicsWithSameIdAreEqual() {
         int id = 20;
-        Epic epicOne = new Epic("Тестовый эпик 1","Описание тестового эпика 1");
+        Epic epicOne = new Epic("Тестовый эпик 1", "Описание тестового эпика 1");
         epicOne.setId(id);
-        Epic epicTwo = new Epic("Тестовый эпик 2","Описание тестового эпика 2");
+        Epic epicTwo = new Epic("Тестовый эпик 2", "Описание тестового эпика 2");
         epicTwo.setId(id);
 
         assertEquals(epicOne, epicTwo);
@@ -46,6 +45,6 @@ class EpicTest {
         List<Integer> mySubtasksIdList = taskManager.getEpicById(1).getMySubtasksIdList();
         assertNotNull(mySubtasksIdList, "Задачи не возвращаются.");
         assertEquals(2, mySubtasksIdList.size(), "Неверное количество задач.");
-        assertEquals(2, mySubtasksIdList.get(0), "Задачи не совпадают.");
+        assertEquals(2, mySubtasksIdList.getFirst(), "Задачи не совпадают.");
     }
 }

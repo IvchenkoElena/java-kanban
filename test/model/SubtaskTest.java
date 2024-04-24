@@ -1,6 +1,5 @@
 import model.Epic;
 import model.Subtask;
-import model.Task;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import service.Managers;
@@ -13,7 +12,7 @@ class SubtaskTest {
 
     @BeforeAll
     static void beforeAll() {
-        Epic renovation = new Epic("Ремонт","Сделать ремонт");
+        Epic renovation = new Epic("Ремонт", "Сделать ремонт");
         taskManager.createEpic(renovation);
         int renovationId = renovation.getId();
         Subtask wall = new Subtask("Стены", "Шпаклюем и штукатурим", renovationId);
@@ -21,7 +20,7 @@ class SubtaskTest {
         Subtask furniture = new Subtask("Мебель", "Купить и собрать", renovationId);
         taskManager.createSubtask(furniture);
 
-        Epic vacation = new Epic("Отпуск","Запланировать путешествие");
+        Epic vacation = new Epic("Отпуск", "Запланировать путешествие");
         taskManager.createEpic(vacation);
         int vacationId = vacation.getId();
         Subtask tickets = new Subtask("Билеты", "Найти выгодные даты", vacationId);
@@ -44,6 +43,6 @@ class SubtaskTest {
     @Test
     void getMyEpicId() {
         Subtask subtask = taskManager.getSubtaskById(2);
-        assertEquals(1, subtask.getMyEpicId(),"ID зпиков не совпадают." );
+        assertEquals(1, subtask.getMyEpicId(), "ID зпиков не совпадают.");
     }
 }

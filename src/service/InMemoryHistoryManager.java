@@ -1,14 +1,16 @@
 package service;
+
 import model.Task;
+
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-
 
     static class Node {
         public Task task;
         public Node next;
         public Node prev;
+
 
         public Node(Node prev, Task task, Node next) {
             this.task = task;
@@ -20,7 +22,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     static Map<Integer, Node> linkedHistoryMap = new HashMap<>(0);
     private Node head;
     private Node tail;
-
 
     public Node linkLast(Task task) {
         final Node oldTail = tail;
@@ -51,7 +52,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
-
     @Override
     public void add(Task task) {
         if (task == null) {
@@ -76,11 +76,10 @@ public class InMemoryHistoryManager implements HistoryManager {
     public List<Task> getHistory() {
         List<Task> tasksList = new ArrayList<>();
         Node currentNode = head;
-        while (currentNode != null){
+        while (currentNode != null) {
             tasksList.add(currentNode.task);
             currentNode = currentNode.next;
         }
         return tasksList;
     }
-
 }
