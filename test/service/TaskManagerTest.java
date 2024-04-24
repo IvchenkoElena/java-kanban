@@ -2,7 +2,6 @@ import model.Epic;
 import model.Status;
 import model.Subtask;
 import model.Task;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.TaskManager;
@@ -12,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskManagerTest {
     static final TaskManager taskManager = Managers.getDefault();
-    private int id = 0;
 
     @Test
     void generateId() {
@@ -60,7 +58,7 @@ class TaskManagerTest {
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(task, tasks.get(0), "Задачи не совпадают.");
+        assertEquals(task, tasks.getFirst(), "Задачи не совпадают.");
     }
 
     @Test
@@ -241,6 +239,6 @@ class TaskManagerTest {
 
         assertFalse(epic1.getMySubtasksIdList().contains(savedSubtask1.getId()), "Подзадачи1 не должно быть.");
         assertEquals(1, epic1.getMySubtasksIdList().size(), "В списке должна быть одна подзадача.");
-        assertEquals(savedSubtask2.getId(), epic1.getMySubtasksIdList().get(0), "Задачи не совпадают.");
+        assertEquals(savedSubtask2.getId(), epic1.getMySubtasksIdList().getFirst(), "Задачи не совпадают.");
     }
 }
