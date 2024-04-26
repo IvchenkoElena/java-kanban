@@ -90,7 +90,7 @@ class TaskManagerTest {
 
     @Test
     void deleteTaskById() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
+        Task task = new Task("Test Task", "Test Task description");
         final int taskId = taskManager.createTask(task);
 
         final Task savedTask = taskManager.getTaskById(taskId);
@@ -194,11 +194,12 @@ class TaskManagerTest {
         Epic epic1 = new Epic("Эпик1", "Описание эпика1");
         taskManager.createEpic(epic1);
         int epic1Id = epic1.getId();
+        Epic savedEpic = taskManager.getEpicById(epic1Id);
         assertNotNull(taskManager.getEpicById(epic1Id), "Задача должна быть.");
+        assertEquals(epic1, savedEpic, "Задачи не совпадают.");
 
         taskManager.deleteEpicById(epic1Id);
 
-        //assertEquals(epic1, savedEpic, "Задачи не совпадают.");
         assertNull(taskManager.getEpicById(epic1Id), "Задачи недолжно быть");
     }
 

@@ -2,7 +2,11 @@ package service;
 
 import model.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -19,22 +23,26 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
-    static Map<Integer, Node> linkedHistoryMap = new HashMap<>(0);
+    private Map<Integer, Node> linkedHistoryMap = new HashMap<>();
     private Node head;
     private Node tail;
 
     public Node linkLast(Task task) {
-        final Node oldTail = tail;
-        final Node newNode = new Node(oldTail, task, null);
-        tail = newNode;
-        if (oldTail == null)
+        final Node newNode = new Node(tail, task, null);
+        if (tail == null)
             head = newNode;
         else
-            oldTail.next = newNode;
+            tail.next = newNode;
+        tail = newNode;
         return newNode;
     }
 
     private void removeNode(Node nodeToRemove) {
+        if (nodeToRemove == null) {
+            return;
+        }
+        linkedHistoryMap.remove(nodeToRemove.task.getId());
+
         Node prevNode = nodeToRemove.prev;
         Node nextNode = nodeToRemove.next;
         if (prevNode == null && nextNode == null) {
@@ -58,18 +66,14 @@ public class InMemoryHistoryManager implements HistoryManager {
             System.out.println("Введен номер не существующей задачи");
             return;
         }
-        if (linkedHistoryMap.containsKey(task.getId())) {
-            removeNode(linkedHistoryMap.get(task.getId()));
-        }
+        removeNode(linkedHistoryMap.get(task.getId()));
+
         linkedHistoryMap.put(task.getId(), linkLast(task));
     }
 
     @Override
     public void remove(int id) {
-        if (linkedHistoryMap.containsKey(id)) {
-            removeNode(linkedHistoryMap.get(id));
-            linkedHistoryMap.remove(id);
-        }
+        removeNode(linkedHistoryMap.get(id));
     }
 
     @Override
