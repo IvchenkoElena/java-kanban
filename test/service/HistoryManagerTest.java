@@ -11,15 +11,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HistoryManagerTest {
     private HistoryManager historyManager;
+    Task task;
+    Task task2;
+    Task task3;
 
     @BeforeEach
     public void beforeEach() {
         historyManager = Managers.getDefaultHistory();
+
+        task = new Task("Задача 1", "Описание задачи 1");
+        task2 = new Task("Задача 2", "Описание задачи 2");
+        task3 = new Task("Задача 3", "Описание задачи 3");
     }
 
     @Test
     void add() {
-        Task task = new Task("Задача 1", "Выспаться");
         task.setId(1);
         historyManager.add(task);
 
@@ -32,26 +38,20 @@ class HistoryManagerTest {
 
     @Test
     void addTaskWithSameId() {
-        Task task1 = new Task("Задача 1", "Описание задачи 1");
-        task1.setId(1);
-        historyManager.add(task1);
-        Task task2 = new Task("Задача 2", "Описание задачи 2");
+        task.setId(1);
+        historyManager.add(task);
         task2.setId(1);
         historyManager.add(task2);
 
         final List<Task> history1 = historyManager.getHistory();
         assertEquals(1, history1.size(), "В истории 1 элемент.");
         assertEquals(task2.getName(), history1.getFirst().getName(), "Должна сохраниться задача 2");
+        assertNotEquals(task.getName(), history1.getFirst().getName(), "В истории не должно быть задачи 1");
     }
 
 
     @Test
     void removeFirst() {
-        Task task = new Task("Задача 1", "Описание задачи 1");
-        Task task2 = new Task("Задача 2", "Описание задачи 2");
-        Task task3 = new Task("Задача 3", "Описание задачи 3");
-        Task task4 = new Task("Задача 4", "Описание задачи 4");
-        Task task5 = new Task("Задача 5", "Описание задачи 5");
 
         task.setId(1);
         historyManager.add(task);
@@ -59,23 +59,16 @@ class HistoryManagerTest {
         historyManager.add(task2);
         task3.setId(3);
         historyManager.add(task3);
-        task4.setId(4);
-        historyManager.add(task4);
-        task5.setId(5);
-        historyManager.add(task5);
+
         historyManager.remove(1);
         final List<Task> history = historyManager.getHistory();
-        assertEquals(4, history.size(), "В истории 4 элемента");
+        assertEquals(2, history.size(), "В истории 2 элемента");
         assertFalse(history.contains(task), "В истории не должно быть элемента с ID 1");
+        assertTrue(history.contains(task2) && history.contains(task3), "В истории содержатся элементы с ID 2 и 3");
     }
 
     @Test
     void removeLast() {
-        Task task = new Task("Задача 1", "Описание задачи 1");
-        Task task2 = new Task("Задача 2", "Описание задачи 2");
-        Task task3 = new Task("Задача 3", "Описание задачи 3");
-        Task task4 = new Task("Задача 4", "Описание задачи 4");
-        Task task5 = new Task("Задача 5", "Описание задачи 5");
 
         task.setId(1);
         historyManager.add(task);
@@ -83,23 +76,16 @@ class HistoryManagerTest {
         historyManager.add(task2);
         task3.setId(3);
         historyManager.add(task3);
-        task4.setId(4);
-        historyManager.add(task4);
-        task5.setId(5);
-        historyManager.add(task5);
-        historyManager.remove(5);
+
+        historyManager.remove(3);
         final List<Task> history = historyManager.getHistory();
-        assertEquals(4, history.size(), "В истории 4 элемента");
-        assertFalse(history.contains(task5), "В истории не должно быть элемента с ID 5");
+        assertEquals(2, history.size(), "В истории 2 элемента");
+        assertFalse(history.contains(task3), "В истории не должно быть элемента с ID 3");
+        assertTrue(history.contains(task) && history.contains(task2), "В истории содержатся элементы с ID 1 и 2");
     }
 
     @Test
     void removeMiddle() {
-        Task task = new Task("Задача 1", "Описание задачи 1");
-        Task task2 = new Task("Задача 2", "Описание задачи 2");
-        Task task3 = new Task("Задача 3", "Описание задачи 3");
-        Task task4 = new Task("Задача 4", "Описание задачи 4");
-        Task task5 = new Task("Задача 5", "Описание задачи 5");
 
         task.setId(1);
         historyManager.add(task);
@@ -107,28 +93,23 @@ class HistoryManagerTest {
         historyManager.add(task2);
         task3.setId(3);
         historyManager.add(task3);
-        task4.setId(4);
-        historyManager.add(task4);
-        task5.setId(5);
-        historyManager.add(task5);
-        historyManager.remove(3);
-        historyManager.remove(4);
+
+        historyManager.remove(2);
+
         final List<Task> history = historyManager.getHistory();
-        assertEquals(3, history.size(), "В истории 3 элемента");
-        assertFalse(history.contains(task3), "В истории не должно быть элемента с ID 3");
-        assertFalse(history.contains(task4), "В истории не должно быть элемента с ID 4");
+        assertEquals(2, history.size(), "В истории 2 элемента");
+        assertFalse(history.contains(task2), "В истории не должно быть элемента с ID 2");
+        assertTrue(history.contains(task) && history.contains(task3), "В истории содержатся элементы с ID 1 и 3");
+
     }
 
     @Test
     void getHistory() {
 
-        Task task3 = new Task("Задача 1", "Выспаться");
-        Task task4 = new Task("Задача 2", "Покушать");
-
-        task3.setId(1);
-        historyManager.add(task3);
-        task4.setId(2);
-        historyManager.add(task4);
+        task.setId(1);
+        historyManager.add(task);
+        task2.setId(2);
+        historyManager.add(task2);
         final List<Task> history2 = historyManager.getHistory();
         assertEquals(2, history2.size(), "В истории 2 элемента");
     }
