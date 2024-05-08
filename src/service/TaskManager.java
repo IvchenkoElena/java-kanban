@@ -4,12 +4,12 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
 
     HistoryManager getHistoryManager();
+
     int generateId();
 
     int createTask(Task task);
