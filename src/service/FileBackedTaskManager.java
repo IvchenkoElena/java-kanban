@@ -125,10 +125,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static Task taskFromString(String value) {
         String[] split = value.split(",");
 
-        int id = 0;
+        int id;
         try {
             id = Integer.parseInt(split[0]);
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException e) {
+            throw new ManagerSaveException(e);
         }
 
         String name = split[2];
@@ -145,10 +146,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static Epic epicFromString(String value) {
         String[] split = value.split(",");
 
-        int id = 0;
+        int id;
         try {
             id = Integer.parseInt(split[0]);
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException e) {
+            throw new ManagerSaveException(e);
         }
 
         String name = split[2];
@@ -164,10 +166,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static Subtask subtaskFromString(String value) {
         String[] split = value.split(",");
 
-        int id = 0;
+        int id;
         try {
             id = Integer.parseInt(split[0]);
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException e) {
+            throw new ManagerSaveException(e);
         }
 
         String name = split[2];
@@ -178,7 +181,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         if (split.length > 5) {
             try {
                 epicForSubtask = Integer.parseInt(split[5]);
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException e) {
+                throw new ManagerSaveException(e);
             }
         }
 
