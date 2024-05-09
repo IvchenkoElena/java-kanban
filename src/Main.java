@@ -127,7 +127,7 @@ public class Main {
         printAllTasks(taskManager);*/
     }
 
-    private static void printAllTasks (TaskManager manager){
+    private static void printAllTasks(TaskManager manager) {
         System.out.println("Задачи:");
         for (Task task : manager.getAllTasksList()) {
             System.out.println(task);
