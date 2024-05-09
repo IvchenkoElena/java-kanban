@@ -5,10 +5,27 @@ import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.TaskManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class SubtaskTest {
-    static final TaskManager taskManager = Managers.getDefault();
+
+    //static final File file = Path.of("file.csv").toFile();
+    static final File file;
+
+    static {
+        try {
+            file = File.createTempFile("Test", ".csv");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static final TaskManager taskManager = Managers.getDefault(file);
+    //static final TaskManager taskManager = Managers.load(file);
 
     @BeforeAll
     static void beforeAll() {

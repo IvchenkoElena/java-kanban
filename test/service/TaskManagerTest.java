@@ -6,13 +6,30 @@ import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.TaskManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 class TaskManagerTest {
-    static final TaskManager taskManager = Managers.getDefault();
+
+    //static final File file = Path.of("file.csv").toFile();
+    static final File file;
+
+    static {
+        try {
+            file = File.createTempFile("Test", ".csv");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    //static final TaskManager taskManager = Managers.getDefault(file);
+    static final TaskManager taskManager = Managers.load(file);
+
+
 
     @Test
     void generateId() {
@@ -244,4 +261,5 @@ class TaskManagerTest {
         assertEquals(1, epic1.getMySubtasksIdList().size(), "В списке должна быть одна подзадача.");
         assertEquals(savedSubtask2.getId(), epic1.getMySubtasksIdList().getFirst(), "Задачи не совпадают.");
     }
+
 }
