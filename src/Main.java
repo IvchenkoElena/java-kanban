@@ -15,14 +15,16 @@ public class Main {
         File file = Path.of("file.csv").toFile();
 
         final TaskManager taskManager = Managers.getDefault(file);
+        //final TaskManager taskManager = Managers.getDefault();
 
         System.out.println("Проверочный вызов пустого принта");
         printAllTasks(taskManager);
 
+        System.out.println("Напечатаем задачи:");
         Task taskOne = new Task("Задача 1", "Купить продукты");
         taskOne.setId(7);
         Task taskTwo = new Task("Задача 2", "Вынести мусор");
-        taskTwo.setId(7);
+        taskTwo.setId(8);
         System.out.println(taskOne);
         System.out.println(taskTwo);
 
@@ -101,30 +103,31 @@ public class Main {
         printAllTasks(taskManager);
 
 
-        /*final TaskManager taskManager = Managers.load(file);
+
+        final TaskManager taskManager2 = Managers.load(file);
 
         System.out.println("вызов принта восстановления из фала");
-        printAllTasks(taskManager);
+        printAllTasks(taskManager2);
 
         Task task8 = new Task("Задача 8", "Вынести мусор, опять?");
-        taskManager.createTask(task8);
+        taskManager2.createTask(task8);
 
         System.out.println("вызов шестого принта");
-        printAllTasks(taskManager);
+        printAllTasks(taskManager2);
 
 
         Task newTask9 = new Task("Задача 1", "Забрать посылку");
         newTask9.setStatus(Status.IN_PROGRESS);
         newTask9.setId(1);
-        taskManager.updateTask(newTask9);
+        taskManager2.updateTask(newTask9);
 
         System.out.println("вызов седьмого принта");
-        printAllTasks(taskManager);
+        printAllTasks(taskManager2);
 
-        taskManager.getTaskById(1);
+        taskManager2.getTaskById(1);
 
         System.out.println("восьмой вызов принта");
-        printAllTasks(taskManager);*/
+        printAllTasks(taskManager2);
     }
 
     private static void printAllTasks(TaskManager manager) {
