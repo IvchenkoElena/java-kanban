@@ -12,10 +12,9 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-        File file = Path.of("file.csv").toFile();
+        File file = Path.of("src/database/file.csv").toFile();
 
         final TaskManager taskManager = Managers.getDefault(file);
-        //final TaskManager taskManager = Managers.getDefault();
 
         System.out.println("Проверочный вызов пустого принта");
         printAllTasks(taskManager);
@@ -106,7 +105,8 @@ public class Main {
 
         final TaskManager taskManager2 = Managers.load(file);
 
-        System.out.println("вызов принта восстановления из фала");
+        System.out.println();
+        System.out.println(("вызов принта восстановления из фала").toUpperCase());
         printAllTasks(taskManager2);
 
         Task task8 = new Task("Задача 8", "Вынести мусор, опять?");

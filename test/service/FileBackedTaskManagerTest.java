@@ -23,11 +23,9 @@ class FileBackedTaskManagerTest {
 
     @Test
     void loadAndSaveTest() {
-        //FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(file);
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
 
         // Проверка сохранения и загрузки пустого файла
-        //manager.save();
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
         Assertions.assertEquals(manager.getAllTasksList().size(), loadedManager.getAllTasksList().size());
         Assertions.assertEquals(manager.getAllSubtasksList().size(), loadedManager.getAllSubtasksList().size());
@@ -49,7 +47,6 @@ class FileBackedTaskManagerTest {
         manager.createTask(task3);
 
         // Проверка сохранения и загрузки нескольких задач
-        //manager.save();
         loadedManager = FileBackedTaskManager.loadFromFile(file);
         Assertions.assertEquals(manager.getAllTasksList().size(), loadedManager.getAllTasksList().size());
         Assertions.assertEquals(manager.getAllSubtasksList().size(), loadedManager.getAllSubtasksList().size());

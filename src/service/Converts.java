@@ -30,7 +30,7 @@ public class Converts {
         }
     }
 
-
+    //Эти методы так и оставить три штуки? или тоже надо в один объединить?
     static String convertTaskToString(Task task) {
 
         return task.getId() +
