@@ -13,19 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
-    /*static final File file = Path.of("file.csv").toFile();
-    static final File file;
-
-    static {
-        try {
-            file = File.createTempFile("Test", ".csv");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    static final TaskManager taskManager = Managers.load(file);
-    */
-
     static final TaskManager taskManager = Managers.getInMemoryDefault();
 
     @Test
