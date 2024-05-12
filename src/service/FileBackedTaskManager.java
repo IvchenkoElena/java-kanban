@@ -98,15 +98,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             String firstLine = "id,type,name,status,description,epic";
             writer.write(firstLine + "\n");
             for (Task task : tasks.values()) {
-                String convertedString = Converts.convertTaskToString(task);
+                String convertedString = Converts.convertToString(task);
                 writer.write(convertedString + "\n");
             }
             for (Epic epic : epics.values()) {
-                String convertedString = Converts.convertEpicToString(epic);
+                String convertedString = Converts.convertToString(epic);
                 writer.write(convertedString + "\n");
             }
             for (Subtask subtask : subtasks.values()) {
-                String convertedString = Converts.convertSubtaskToString(subtask);
+                String convertedString = Converts.convertToString(subtask);
                 writer.write(convertedString + "\n");
             }
         } catch (IOException e) {

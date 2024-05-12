@@ -30,46 +30,29 @@ public class Converts {
         }
     }
 
-    //Эти методы так и оставить три штуки? или тоже надо в один объединить?
-    static String convertTaskToString(Task task) {
-
-        return task.getId() +
-                "," +
-                (task.getType()).toString() +
-                "," +
-                task.getName() +
-                "," +
-                (task.getStatus()).toString() +
-                "," +
-                task.getDescription();
+    static String convertToString(Task task) {
+        if (task instanceof Subtask subtask) {
+            return subtask.getId() +
+                    "," +
+                    (subtask.getType()).toString() +
+                    "," +
+                    subtask.getName() +
+                    "," +
+                    (subtask.getStatus()).toString() +
+                    "," +
+                    subtask.getDescription() +
+                    "," +
+                    subtask.getMyEpicId();
+        } else {
+            return task.getId() +
+                    "," +
+                    (task.getType()).toString() +
+                    "," +
+                    task.getName() +
+                    "," +
+                    (task.getStatus()).toString() +
+                    "," +
+                    task.getDescription();
+        }
     }
-
-    static String convertEpicToString(Epic epic) {
-
-        return epic.getId() +
-                "," +
-                (epic.getType()).toString() +
-                "," +
-                epic.getName() +
-                "," +
-                (epic.getStatus()).toString() +
-                "," +
-                epic.getDescription();
-    }
-
-    static String convertSubtaskToString(Subtask subtask) {
-
-        return subtask.getId() +
-                "," +
-                (subtask.getType()).toString() +
-                "," +
-                subtask.getName() +
-                "," +
-                (subtask.getStatus()).toString() +
-                "," +
-                subtask.getDescription() +
-                "," +
-                subtask.getMyEpicId();
-    }
-
 }
