@@ -1,0 +1,5 @@
+id,type,name,status,description,epic
+1,TASK,Задача 1,IN_PROGRESS,Забрать посылку
+3,EPIC,Ремонт,IN_PROGRESS,Сделать ремонт
+4,SUBTASK,Стены,IN_PROGRESS,Красим,3
+5,SUBTASK,Мебель,DONE,Заказать,3

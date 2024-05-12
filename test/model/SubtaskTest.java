@@ -5,10 +5,15 @@ import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.TaskManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class SubtaskTest {
-    static final TaskManager taskManager = Managers.getDefault();
+
+    static final TaskManager taskManager = Managers.getInMemoryDefault();
 
     @BeforeAll
     static void beforeAll() {

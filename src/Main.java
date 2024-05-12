@@ -5,17 +5,25 @@ import model.Status;
 import service.Managers;
 import service.TaskManager;
 
+import java.io.File;
+import java.nio.file.Path;
+
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
+        File file = Path.of("src/database/file.csv").toFile();
 
-        final TaskManager taskManager = Managers.getDefault();
+        final TaskManager taskManager = Managers.getDefault(file);
 
+        System.out.println("Проверочный вызов пустого принта");
+        printAllTasks(taskManager);
+
+        System.out.println("Напечатаем задачи:");
         Task taskOne = new Task("Задача 1", "Купить продукты");
         taskOne.setId(7);
         Task taskTwo = new Task("Задача 2", "Вынести мусор");
-        taskTwo.setId(7);
+        taskTwo.setId(8);
         System.out.println(taskOne);
         System.out.println(taskTwo);
 
@@ -29,7 +37,7 @@ public class Main {
         Task task2 = new Task("Задача 2", "Вынести мусор");
         taskManager.createTask(task2);
 
-        Epic renovation = new Epic("Ремонт","Сделать ремонт");
+        Epic renovation = new Epic("Ремонт", "Сделать ремонт");
         taskManager.createEpic(renovation);
         int renovationId = renovation.getId();
         Subtask wall = new Subtask("Стены", "Шпаклюем и штукатурим", renovationId);
@@ -37,7 +45,7 @@ public class Main {
         Subtask furniture = new Subtask("Мебель", "Купить и собрать", renovationId);
         taskManager.createSubtask(furniture);
 
-        Epic vacation = new Epic("Отпуск","Запланировать путешествие");
+        Epic vacation = new Epic("Отпуск", "Запланировать путешествие");
         taskManager.createEpic(vacation);
         int vacationId = vacation.getId();
         Subtask tickets = new Subtask("Билеты", "Найти выгодные даты", vacationId);
@@ -48,7 +56,6 @@ public class Main {
 
         System.out.println("второй вызов принта");
         printAllTasks(taskManager);
-
 
         taskManager.getTaskById(1);
 
@@ -93,6 +100,34 @@ public class Main {
 
         System.out.println("пятый вызов принта");
         printAllTasks(taskManager);
+
+
+
+        final TaskManager taskManager2 = Managers.load(file);
+
+        System.out.println();
+        System.out.println(("вызов принта восстановления из фала").toUpperCase());
+        printAllTasks(taskManager2);
+
+        Task task8 = new Task("Задача 8", "Вынести мусор, опять?");
+        taskManager2.createTask(task8);
+
+        System.out.println("вызов шестого принта");
+        printAllTasks(taskManager2);
+
+
+        Task newTask9 = new Task("Задача 1", "Забрать посылку");
+        newTask9.setStatus(Status.IN_PROGRESS);
+        newTask9.setId(1);
+        taskManager2.updateTask(newTask9);
+
+        System.out.println("вызов седьмого принта");
+        printAllTasks(taskManager2);
+
+        taskManager2.getTaskById(1);
+
+        System.out.println("восьмой вызов принта");
+        printAllTasks(taskManager2);
     }
 
     private static void printAllTasks(TaskManager manager) {

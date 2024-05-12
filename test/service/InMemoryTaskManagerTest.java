@@ -11,8 +11,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class TaskManagerTest {
-    static final TaskManager taskManager = Managers.getDefault();
+class InMemoryTaskManagerTest {
+
+    static final TaskManager taskManager = Managers.getInMemoryDefault();
 
     @Test
     void generateId() {
@@ -244,4 +245,5 @@ class TaskManagerTest {
         assertEquals(1, epic1.getMySubtasksIdList().size(), "В списке должна быть одна подзадача.");
         assertEquals(savedSubtask2.getId(), epic1.getMySubtasksIdList().getFirst(), "Задачи не совпадают.");
     }
+
 }
