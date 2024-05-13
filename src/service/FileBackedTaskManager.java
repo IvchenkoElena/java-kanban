@@ -4,8 +4,6 @@ import model.*;
 
 import java.io.*;
 import java.nio.file.Files;
-
-
 import java.nio.file.Paths;
 
 
@@ -16,59 +14,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.fileToAutoSave = file;
     }
 
-    //не получилось реализовать через Files.readString(file.toPath())
-    // в этом варианте не считывает информацию из файла. в чем ошибка?
-    /*public static FileBackedTaskManager loadFromFile(File file) {
-        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
-
-        if (Files.exists(Paths.get(file.toURI()))) {
-
-            try {String fileData = Files.readString(file.toPath());
-                String[] lines = fileData.split(System.lineSeparator());
-                int maxId = 0;
-                for (int i = 1; i < lines.length; i++) {
-                    String value = lines[i];
-                    Task task = Converts.fromString(value);
-                    switch (task.getType()) {
-                        case TASK:
-                            fileBackedTaskManager.tasks.put(task.getId(), task);
-                        case SUBTASK:
-                            if (task instanceof Subtask) {
-                                Subtask subtask = (Subtask)task;
-                                fileBackedTaskManager.subtasks.put(task.getId(), subtask);
-                                Epic myEpic = fileBackedTaskManager.epics.get(subtask.getMyEpicId());
-                                myEpic.getMySubtasksIdList().add(task.getId());
-                            }
-                        case EPIC:
-                            if (task instanceof Epic) {
-                                fileBackedTaskManager.epics.put(task.getId(), (Epic)task);
-                            }
-                    }
-                    if (task.getId() > maxId) {
-                        maxId = task.getId();
-                    }
-                }
-                fileBackedTaskManager.id = maxId;
-            } catch (IOException e) {
-                throw new ManagerSaveException(e);
-            }
-        }
-        return fileBackedTaskManager;
-    }*/
-
+    // получилось реализовать через Files.readString(file.toPath()), заменила lineSeparator на "\n"
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
 
         if (Files.exists(Paths.get(file.toURI()))) {
 
-            try (FileReader reader = new FileReader(file); BufferedReader br = new BufferedReader(reader)) {
+            try {
+                String fileData = Files.readString(file.toPath());
+                String[] lines = fileData.split("\n");
                 int maxId = 0;
-
-                while (br.ready()) {
-                    String value = br.readLine();
-                    if (value.startsWith("id")) {
-                        continue;
-                    }
+                for (int i = 1; i < lines.length; i++) {
+                    String value = lines[i];
                     Task task = Converts.fromString(value);
                     switch (task.getType()) {
                         case TASK:
@@ -83,6 +40,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             if (task instanceof Epic) {
                                 fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
                             }
+                    }
+                    if (task.getId() > maxId) {
+                        maxId = task.getId();
                     }
                 }
                 fileBackedTaskManager.id = maxId;
