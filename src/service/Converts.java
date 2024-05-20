@@ -25,14 +25,14 @@ public class Converts {
         }
 
         Duration duration;
-        if (split[6].isBlank()){
+        if (split[6].isBlank()) {
             duration = null;
         } else {
             duration = Duration.ofMinutes(Long.parseLong(split[6]));
         }
 
         LocalDateTime end;
-        if (split[7].isBlank()){
+        if (split[7].isBlank()) {
             end = null;
         } else {
             end = LocalDateTime.parse(split[7], formatter);
