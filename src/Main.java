@@ -40,7 +40,7 @@ public class Main {
         task1.setDuration(Duration.ofMinutes(80));
         taskManager.createTask(task1);
         Task task2 = new Task("Задача 2", "Вынести мусор");
-        task2.setStartTime(LocalDateTime.of(2024, 5, 19, 12,15));
+        task2.setStartTime(LocalDateTime.of(2024, 5, 19, 12, 15));
         task2.setDuration(Duration.ofMinutes(90));
         taskManager.createTask(task2);
 
@@ -54,7 +54,7 @@ public class Main {
         taskManager.createSubtask(wall2);
 
         Subtask furniture2 = new Subtask("Мебель2", "Купить и собрать", renovation2Id);
-        furniture2.setStartTime(LocalDateTime.of(2024, 5, 25, 13,30));
+        furniture2.setStartTime(LocalDateTime.of(2024, 5, 25, 13, 30));
         furniture2.setDuration(Duration.ofMinutes(90));
         taskManager.createSubtask(furniture2);
 
@@ -75,7 +75,7 @@ public class Main {
 
         Task task3 = new Task("Задача 3", "Вынести мусор3");
         task3.setId(2);
-        task3.setStartTime(LocalDateTime.of(2024, 5, 19, 12,15));
+        task3.setStartTime(LocalDateTime.of(2024, 5, 19, 12, 15));
         task3.setDuration(Duration.ofMinutes(90));
         taskManager.updateTask(task3);
 
@@ -88,7 +88,7 @@ public class Main {
 
         Subtask newFurniture = new Subtask("Мебель", "Заказать", renovation2Id);
         newFurniture.setStatus(Status.DONE);
-        newFurniture.setStartTime(LocalDateTime.of(2024, 5, 25, 12,30));
+        newFurniture.setStartTime(LocalDateTime.of(2024, 5, 25, 12, 30));
         newFurniture.setDuration(Duration.ofMinutes(90));
         newFurniture.setId(5);
         taskManager.updateSubtask(newFurniture);
@@ -157,7 +157,6 @@ public class Main {
 
         System.out.println("пятый вызов принта");
         printAllTasks(taskManager);
-
 
 
         final TaskManager taskManager2 = Managers.load(file);

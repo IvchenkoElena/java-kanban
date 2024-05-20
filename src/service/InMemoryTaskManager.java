@@ -291,7 +291,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(Subtask subtask) {
-        if (subtask == null){
+        if (subtask == null) {
             return;
         }
         if (subtasks.containsKey(subtask.getId())) {

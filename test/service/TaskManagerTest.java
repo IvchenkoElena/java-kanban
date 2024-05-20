@@ -211,7 +211,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void forSubtaskEpicExist(){
+    void forSubtaskEpicExist() {
         Epic epic1 = new Epic("Эпик1", "Описание эпика1");
         int epic1Id = taskManager.createEpic(epic1);
         Subtask subtask = new Subtask("Test addNewSubtask", "Test addNewSubtask description", epic1Id);
@@ -359,7 +359,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Epic savedEpic = taskManager.getEpicById(epic1Id);
 
         Subtask subtask1 = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description", epic1Id);
-        subtask1.setStartTime(LocalDateTime.of(2024,5,19,15,0));
+        subtask1.setStartTime(LocalDateTime.of(2024, 5, 19, 15, 0));
         taskManager.createSubtask(subtask1);
 
         assertEquals(subtask1.getStartTime(), savedEpic.getStartTime());
@@ -374,7 +374,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Epic savedEpic = taskManager.getEpicById(epic1Id);
 
         Subtask subtask1 = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description", epic1Id);
-        subtask1.setStartTime(LocalDateTime.of(2024,5,19,15,0));
+        subtask1.setStartTime(LocalDateTime.of(2024, 5, 19, 15, 0));
         subtask1.setDuration(Duration.ofMinutes(90));
         taskManager.createSubtask(subtask1);
 
@@ -389,11 +389,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Epic savedEpic = taskManager.getEpicById(epic1Id);
 
         Subtask prev = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description", epic1Id);
-        prev.setStartTime(LocalDateTime.of(2024,5,19,15,0));
+        prev.setStartTime(LocalDateTime.of(2024, 5, 19, 15, 0));
         taskManager.createSubtask(prev);
 
         Subtask next = new Subtask("Test addNewSubtask2", "Test addNewSubtask2 description", epic1Id);
-        next.setStartTime(LocalDateTime.of(2024,5,19,16,0));
+        next.setStartTime(LocalDateTime.of(2024, 5, 19, 16, 0));
         taskManager.createSubtask(next);
 
         assertEquals(prev.getStartTime(), savedEpic.getStartTime());
@@ -406,12 +406,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Epic savedEpic = taskManager.getEpicById(epic1Id);
 
         Subtask prev = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description", epic1Id);
-        prev.setStartTime(LocalDateTime.of(2024,5,19,15,0));
+        prev.setStartTime(LocalDateTime.of(2024, 5, 19, 15, 0));
         prev.setDuration(Duration.ofMinutes(10));
         taskManager.createSubtask(prev);
 
         Subtask next = new Subtask("Test addNewSubtask2", "Test addNewSubtask2 description", epic1Id);
-        next.setStartTime(LocalDateTime.of(2024,5,19,16,0));
+        next.setStartTime(LocalDateTime.of(2024, 5, 19, 16, 0));
         next.setDuration(Duration.ofMinutes(10));
         taskManager.createSubtask(next);
 
@@ -428,14 +428,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(savedEpic.getDuration());
 
         Subtask subtask1 = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description", epic1Id);
-        subtask1.setStartTime(LocalDateTime.of(2024,5,19,15,0));
+        subtask1.setStartTime(LocalDateTime.of(2024, 5, 19, 15, 0));
         subtask1.setDuration(Duration.ofMinutes(10));
         taskManager.createSubtask(subtask1);
 
         assertEquals(subtask1.getDuration(), savedEpic.getDuration());
 
         Subtask subtask2 = new Subtask("Test addNewSubtask2", "Test addNewSubtask2 description", epic1Id);
-        subtask2.setStartTime(LocalDateTime.of(2024,5,19,16,0));
+        subtask2.setStartTime(LocalDateTime.of(2024, 5, 19, 16, 0));
         subtask2.setDuration(Duration.ofMinutes(20));
         taskManager.createSubtask(subtask2);
 
@@ -452,47 +452,47 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(savedTask.getEndTime(), "Время окончания не должно быть задано");
 
         Task newTask1 = new Task("Задача 1", "Купить много продуктов");
-        newTask1.setStartTime(LocalDateTime.of(2024,5,19,15,0));
+        newTask1.setStartTime(LocalDateTime.of(2024, 5, 19, 15, 0));
         newTask1.setId(taskId);
         taskManager.updateTask(newTask1);
         final Task newSavedTask = taskManager.getTaskById(taskId);
         assertEquals(newTask1.getStartTime(), newSavedTask.getStartTime(), "Стартовое время не совпадает");
-        assertEquals(LocalDateTime.of(2024,5,19,15,0), newSavedTask.getStartTime(), "Стартовое время не совпадает");
+        assertEquals(LocalDateTime.of(2024, 5, 19, 15, 0), newSavedTask.getStartTime(), "Стартовое время не совпадает");
         assertNull(savedTask.getDuration(), "Продолжительность не должна быть задана");
         assertNull(savedTask.getEndTime(), "Время окончания не должно быть задано");
 
         Task newTask2 = new Task("Задача 1", "Купить очень много продуктов");
-        newTask2.setStartTime(LocalDateTime.of(2024,5,19,16,0));
+        newTask2.setStartTime(LocalDateTime.of(2024, 5, 19, 16, 0));
         newTask2.setDuration(Duration.ofMinutes(90));
         newTask2.setId(taskId);
         taskManager.updateTask(newTask2);
         final Task newSavedTask2 = taskManager.getTaskById(taskId);
         assertEquals(newTask2.getStartTime(), newSavedTask2.getStartTime(), "Стартовое время не совпадает");
-        assertEquals(LocalDateTime.of(2024,5,19,16,0), newSavedTask2.getStartTime(), "Стартовое время не совпадает");
+        assertEquals(LocalDateTime.of(2024, 5, 19, 16, 0), newSavedTask2.getStartTime(), "Стартовое время не совпадает");
         assertEquals(newTask2.getDuration(), newSavedTask2.getDuration(), "Продолжительность не совпадает");
         assertEquals(Duration.ofMinutes(90), newSavedTask2.getDuration(), "Продолжительность не совпадает");
         assertEquals(newTask2.getEndTime(), newSavedTask2.getEndTime(), "Время окончания не совпадает");
     }
 
     @Test
-    void timeCrossAndPrioritizedTasksList(){
+    void timeCrossAndPrioritizedTasksList() {
         Task task1 = new Task("Test addNewTask1", "Test addNewTask1 description");
-        task1.setStartTime(LocalDateTime.of(2024,5,20,8,0));
+        task1.setStartTime(LocalDateTime.of(2024, 5, 20, 8, 0));
         task1.setDuration(Duration.ofMinutes(60));
         final int task1Id = taskManager.createTask(task1);
 
         Task task2 = new Task("Test addNewTask2", "Test addNewTask2 description");
-        task2.setStartTime(LocalDateTime.of(2024,5,20,9,0));
+        task2.setStartTime(LocalDateTime.of(2024, 5, 20, 9, 0));
         task2.setDuration(Duration.ofMinutes(60));
         final int task2Id = taskManager.createTask(task2);
 
         Task task3 = new Task("Test addNewTask3", "Test addNewTask3 description");
-        task3.setStartTime(LocalDateTime.of(2024,5,20,9,30));
+        task3.setStartTime(LocalDateTime.of(2024, 5, 20, 9, 30));
         task3.setDuration(Duration.ofMinutes(10));
         final int task3Id = taskManager.createTask(task3);
 
         Task task4 = new Task("Test addNewTask4", "Test addNewTask4 description");
-        task4.setStartTime(LocalDateTime.of(2024,5,21,8,30));
+        task4.setStartTime(LocalDateTime.of(2024, 5, 21, 8, 30));
         final int task4Id = taskManager.createTask(task4);
 
         assertNotNull(taskManager.getTaskById(task1Id), "Первая задача должна записываться в HashMap");
@@ -506,7 +506,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertFalse(taskManager.getPrioritizedTasks().contains(task4), "Задача4 без продолжительности не должна записываться в сортированный список");
 
         Task updatedTask1ver1 = new Task("Test updatedTask1ver1", "Test updatedTask1ver1 description");
-        updatedTask1ver1.setStartTime(LocalDateTime.of(2024,5,20,8,10));
+        updatedTask1ver1.setStartTime(LocalDateTime.of(2024, 5, 20, 8, 10));
         updatedTask1ver1.setDuration(Duration.ofMinutes(60));
         updatedTask1ver1.setId(task1Id);
         taskManager.updateTask(updatedTask1ver1);
