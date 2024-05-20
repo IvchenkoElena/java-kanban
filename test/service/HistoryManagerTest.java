@@ -25,6 +25,12 @@ class HistoryManagerTest {
     }
 
     @Test
+    void emptyHistory() {
+        List<Task> emptyHistory = historyManager.getHistory();
+        assertEquals(0, emptyHistory.size(), "История должна быть пуста");
+    }
+
+    @Test
     void add() {
         task.setId(1);
         historyManager.add(task);
@@ -49,10 +55,8 @@ class HistoryManagerTest {
         assertNotEquals(task.getName(), history1.getFirst().getName(), "В истории не должно быть задачи 1");
     }
 
-
     @Test
     void removeFirst() {
-
         task.setId(1);
         historyManager.add(task);
         task2.setId(2);
@@ -69,7 +73,6 @@ class HistoryManagerTest {
 
     @Test
     void removeLast() {
-
         task.setId(1);
         historyManager.add(task);
         task2.setId(2);
@@ -86,7 +89,6 @@ class HistoryManagerTest {
 
     @Test
     void removeMiddle() {
-
         task.setId(1);
         historyManager.add(task);
         task2.setId(2);
@@ -105,7 +107,6 @@ class HistoryManagerTest {
 
     @Test
     void getHistory() {
-
         task.setId(1);
         historyManager.add(task);
         task2.setId(2);

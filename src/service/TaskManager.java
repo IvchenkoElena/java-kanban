@@ -10,6 +10,10 @@ public interface TaskManager {
 
     HistoryManager getHistoryManager();
 
+    List<Task> getPrioritizedTasks();
+
+    boolean isTimeCross(Task task1, Task task2);
+
     int generateId();
 
     int createTask(Task task);
@@ -29,6 +33,12 @@ public interface TaskManager {
     void updateEpic(Epic epic);
 
     void determineEpicStatus(int id);
+
+    void determineEpicStartTime(int id);
+
+    void determineEpicDuration(int id);
+
+    void determineEpicEndTime(int id);
 
     List<Epic> getAllEpicsList();
 
