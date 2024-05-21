@@ -15,27 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
-    //FileBackedTaskManager fileBackedTaskManager; //это ненужное поле?
 
     File saveFile;
 
     @BeforeEach
     public void setUp() throws IOException {
         saveFile = File.createTempFile("java-kanban-save-test", ".csv");
-        //super.taskManager = FileBackedTaskManager.loadFromFile(saveFile);
-        super.taskManager = new FileBackedTaskManager(saveFile); //тут правильно нового создать или сделать load, как в предыдущей строке?
+        taskManager = new FileBackedTaskManager(saveFile);
     }
-
-//    @BeforeEach
-//    void setUp() {// нужно ли мне отловить исключение сразу или пробросить?
-//        try {
-//            saveFile = File.createTempFile("Test", ".csv");
-//        } catch (IOException e) {
-//                throw new RuntimeException(e);
-//        }
-//        super.taskManager = new FileBackedTaskManager(saveFile);
-//    }
-
 
     @Test
     void loadAndSaveTest() {
@@ -123,7 +110,23 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         }
     }
 
-    //не понимаю, какое исключение написать, и о чем должно быть лямбда-выражение в методе
+    // В ТЗ-8 есть требование: Покрываем код тестами
+    //Ваша цель — написать отдельный тест для оставшихся публичных методов: стандартный кейс работы и граничные случаи.
+    // Потребуются следующие тесты.
+    //Корректный перехват исключений при работе с файлами:
+    // для этого используйте утилитарные методы
+    // JUnit — Assertions.assertThrows(…) и Assertions.assertDoesNotThrow(…).
+    // Эти методы получают на вход класс-исключение и экземпляр анонимного класса/лямбду.
+    // В единственном методе реализуется вызов того кода, который потенциально может вызвать исключение.
+    // Например:
+    // @Test
+    //     public void testException() {
+    //         assertThrows(ArithmeticException.class, () -> {
+    //             int a = 10 / 0;
+    //         }, "Деление на ноль должно приводить к исключению");
+    //     }
+    //  На вебинаре нам сказали хотя бы использовать DoesNotThrow, чтобы показать, что умеем этим пользоваться.
+    //Хотела написать, но не понимаю, какое исключение написать, и о чем должно быть лямбда-выражение в методе
 //    @Test
 //    public void testException() {
 //        assertDoesNotThrow();

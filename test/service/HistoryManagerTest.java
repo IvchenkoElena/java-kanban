@@ -8,7 +8,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 class HistoryManagerTest {
     private HistoryManager historyManager;
     Task task;

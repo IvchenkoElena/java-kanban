@@ -6,7 +6,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File fileToAutoSave;
 
@@ -32,19 +31,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             if (task.getStartTime() != null && task.getEndTime() != null) {
                                 fileBackedTaskManager.prioritizedTasksSet.add(task);
                             }
+                            break;
                         case SUBTASK:
-                            if (task instanceof Subtask subtask) {
-                                fileBackedTaskManager.subtasks.put(task.getId(), subtask);
-                                if (task.getStartTime() != null && task.getEndTime() != null) {
-                                    fileBackedTaskManager.prioritizedTasksSet.add(task);
-                                }
-                                Epic myEpic = fileBackedTaskManager.epics.get(subtask.getMyEpicId());
-                                myEpic.getMySubtasksIdList().add(task.getId());
+                            Subtask subtask = (Subtask) task;
+                            fileBackedTaskManager.subtasks.put(task.getId(), subtask);
+                            if (task.getStartTime() != null && task.getEndTime() != null) {
+                                fileBackedTaskManager.prioritizedTasksSet.add(task);
                             }
+                            Epic myEpic = fileBackedTaskManager.epics.get(subtask.getMyEpicId());
+                            myEpic.getMySubtasksIdList().add(task.getId());
+                            break;
                         case EPIC:
-                            if (task instanceof Epic) {
-                                fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
-                            }
+                            fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
+                            break;
                     }
                     if (task.getId() > maxId) {
                         maxId = task.getId();

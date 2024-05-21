@@ -15,7 +15,6 @@ public class Task {
     protected Duration duration;
     protected LocalDateTime startTime;
 
-
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
@@ -78,10 +77,9 @@ public class Task {
         if (startTime == null || duration == null) {
             return null;
         } else {
-            return startTime.plus(duration);
+            return startTime.plusMinutes(duration.toMinutes());
         }
     }
-
 
     @Override
     public String toString() {
