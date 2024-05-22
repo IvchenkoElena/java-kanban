@@ -58,7 +58,7 @@ public class InMemoryTaskManager implements TaskManager {
             Duration currentDuration = subtask.getDuration();
             if (currentDuration != null) {
                 if (sumDurations != null) {
-                    sumDurations = sumDurations.plus(currentDuration);//здесь тоже надо в минутах?
+                    sumDurations = sumDurations.plus(currentDuration);
                 } else {
                     sumDurations = currentDuration;
                 }
@@ -132,7 +132,7 @@ public class InMemoryTaskManager implements TaskManager {
                         .filter(i -> i.getId() != task.getId())
                         .noneMatch(t -> isTimeCross(t, task))) {
                     //if (oldTask.getStartTime() != null) {
-                        prioritizedTasksSet.remove(oldTask);
+                    prioritizedTasksSet.remove(oldTask);
                     //}
                     prioritizedTasksSet.add(task);
                 } else {
@@ -141,7 +141,7 @@ public class InMemoryTaskManager implements TaskManager {
                 }
             } else {
                 //if (oldTask.getStartTime() != null) {
-                    prioritizedTasksSet.remove(oldTask);
+                prioritizedTasksSet.remove(oldTask);
                 //}
             }
             tasks.put(task.getId(), task);

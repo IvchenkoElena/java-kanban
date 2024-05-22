@@ -4,7 +4,6 @@ import model.*;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File fileToAutoSave;
@@ -16,44 +15,45 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
 
-        if (Files.exists(Paths.get(file.toURI()))) {
+        //if (Files.exists(Paths.get(file.toURI()))) { // мне надо убрать эту проверку, чтобы выбрасывались исключения?
+        // или правильнее будет оставить проверку? Тогда в случае, если файл не существует, у меня вообще ничего не произойдет?
 
-            try {
-                String fileData = Files.readString(file.toPath());
-                String[] lines = fileData.split("\n");
-                int maxId = 0;
-                for (int i = 1; i < lines.length; i++) {
-                    String value = lines[i];
-                    Task task = Converts.fromString(value);
-                    switch (task.getType()) {
-                        case TASK:
-                            fileBackedTaskManager.tasks.put(task.getId(), task);
-                            if (task.getStartTime() != null && task.getEndTime() != null) {
-                                fileBackedTaskManager.prioritizedTasksSet.add(task);
-                            }
-                            break;
-                        case SUBTASK:
-                            Subtask subtask = (Subtask) task;
-                            fileBackedTaskManager.subtasks.put(task.getId(), subtask);
-                            if (task.getStartTime() != null && task.getEndTime() != null) {
-                                fileBackedTaskManager.prioritizedTasksSet.add(task);
-                            }
-                            Epic myEpic = fileBackedTaskManager.epics.get(subtask.getMyEpicId());
-                            myEpic.getMySubtasksIdList().add(task.getId());
-                            break;
-                        case EPIC:
-                            fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
-                            break;
-                    }
-                    if (task.getId() > maxId) {
-                        maxId = task.getId();
-                    }
+        try {
+            String fileData = Files.readString(file.toPath());
+            String[] lines = fileData.split("\n");
+            int maxId = 0;
+            for (int i = 1; i < lines.length; i++) {
+                String value = lines[i];
+                Task task = Converts.fromString(value);
+                switch (task.getType()) {
+                    case TASK:
+                        fileBackedTaskManager.tasks.put(task.getId(), task);
+                        if (task.getStartTime() != null && task.getEndTime() != null) {
+                            fileBackedTaskManager.prioritizedTasksSet.add(task);
+                        }
+                        break;
+                    case SUBTASK:
+                        Subtask subtask = (Subtask) task;
+                        fileBackedTaskManager.subtasks.put(task.getId(), subtask);
+                        if (task.getStartTime() != null && task.getEndTime() != null) {
+                            fileBackedTaskManager.prioritizedTasksSet.add(task);
+                        }
+                        Epic myEpic = fileBackedTaskManager.epics.get(subtask.getMyEpicId());
+                        myEpic.getMySubtasksIdList().add(task.getId());
+                        break;
+                    case EPIC:
+                        fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
+                        break;
                 }
-                fileBackedTaskManager.generatedId = maxId;
-            } catch (IOException e) {
-                throw new ManagerSaveException(e);
+                if (task.getId() > maxId) {
+                    maxId = task.getId();
+                }
             }
+            fileBackedTaskManager.generatedId = maxId;
+        } catch (IOException e) {
+            throw new ManagerSaveException(e);
         }
+        //}
         return fileBackedTaskManager;
     }
 

@@ -1,8 +1,6 @@
 import model.Epic;
 import model.Status;
 import model.Task;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.FileBackedTaskManager;
@@ -14,9 +12,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
@@ -114,12 +110,38 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         }
     }
 
+    @Test
+    public void shouldThrowManagerSaveExceptionSaveTest() {
+        // Создаем менеджер задач и передаем ему файл по несуществующему пути
+        File wrongFile = new File("notExistedPath/wrong.csv");
+        taskManager = new FileBackedTaskManager(wrongFile);
+        Task task = new Task("Задача 1", "Описание задачи 1");
+        assertThrows(ManagerSaveException.class, () -> taskManager.createTask(task));
+    }
+
 //    @Test
-//    public void testException() {
-//        File notExistedFile = Path.of("src/database/notExistedFile.csv").toFile();
-//        Assertions.assertThrows(ManagerSaveException.class, () -> {
-//            FileBackedTaskManager.loadFromFile(notExistedFile);
+//    public void shouldNotThrowManagerSaveException() { //эти методы DoesNotThrow так и не запускаются
+//        Task task = new Task("Задача 1", "Описание задачи 1");
+//        Assertions.assertDoesNotThrow(ManagerSaveException.class, () -> {
+//            taskManager.createTask(task);
 //        });
+//    }
+
+    @Test
+    public void shouldThrowManagerSaveExceptionLoadTest() { //Чтобы этот тест работал,
+        // удалила проверку на существование файла в методе loadFromFile,
+        // не знаю, как правильнее? наверное исключение более информативно
+
+        // Создаем файл с несуществующим путем
+        File wrongFile = new File("notExistedPath/wrong.csv");
+        assertThrows(ManagerSaveException.class, () -> FileBackedTaskManager.loadFromFile(wrongFile));
+        // передаем несуществующий файл
+        File notExistedFile = Path.of("notExistedFile", "csv").toFile();
+        assertThrows(ManagerSaveException.class, () -> FileBackedTaskManager.loadFromFile(notExistedFile));
+    }
+
+//    @Test
+//    public void shouldNotThrowManagerSaveExceptionLoadTest() { //эти методы DoesNotThrow так и не запускаются
 //        Assertions.assertDoesNotThrow(ManagerSaveException.class, () -> {
 //            FileBackedTaskManager.loadFromFile(saveFile);
 //        });
