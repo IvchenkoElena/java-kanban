@@ -26,7 +26,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node head;
     private Node tail;
 
-    public Node linkLast(Task task) { //пишет тут проблему: Warning:(29, 12) Class 'Node' is exposed outside its defined visibility scope
+    private Node linkLast(Task task) { //пишет тут проблему: Warning:(29, 12) Class 'Node' is exposed outside its defined visibility scope
         final Node newNode = new Node(tail, task, null);
         if (tail == null)
             head = newNode;

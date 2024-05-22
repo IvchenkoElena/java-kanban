@@ -2,15 +2,19 @@ import model.Epic;
 import model.Status;
 import model.Task;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.FileBackedTaskManager;
+import service.ManagerSaveException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -110,26 +114,15 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         }
     }
 
-    // В ТЗ-8 есть требование: Покрываем код тестами
-    //Ваша цель — написать отдельный тест для оставшихся публичных методов: стандартный кейс работы и граничные случаи.
-    // Потребуются следующие тесты.
-    //Корректный перехват исключений при работе с файлами:
-    // для этого используйте утилитарные методы
-    // JUnit — Assertions.assertThrows(…) и Assertions.assertDoesNotThrow(…).
-    // Эти методы получают на вход класс-исключение и экземпляр анонимного класса/лямбду.
-    // В единственном методе реализуется вызов того кода, который потенциально может вызвать исключение.
-    // Например:
-    // @Test
-    //     public void testException() {
-    //         assertThrows(ArithmeticException.class, () -> {
-    //             int a = 10 / 0;
-    //         }, "Деление на ноль должно приводить к исключению");
-    //     }
-    //  На вебинаре нам сказали хотя бы использовать DoesNotThrow, чтобы показать, что умеем этим пользоваться.
-    //Хотела написать, но не понимаю, какое исключение написать, и о чем должно быть лямбда-выражение в методе
 //    @Test
 //    public void testException() {
-//        assertDoesNotThrow();
+//        File notExistedFile = Path.of("src/database/notExistedFile.csv").toFile();
+//        Assertions.assertThrows(ManagerSaveException.class, () -> {
+//            FileBackedTaskManager.loadFromFile(notExistedFile);
+//        });
+//        Assertions.assertDoesNotThrow(ManagerSaveException.class, () -> {
+//            FileBackedTaskManager.loadFromFile(saveFile);
+//        });
 //    }
 
 }

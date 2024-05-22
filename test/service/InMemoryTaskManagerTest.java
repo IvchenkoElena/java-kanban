@@ -222,13 +222,22 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertNull(savedTask.getDuration(), "Продолжительность не должна быть задана");
         assertNull(savedTask.getEndTime(), "Время окончания не должно быть задано");
 
+        Task newTask = new Task("Задача 1", "Купить разных продуктов");
+        newTask.setId(taskId);
+        taskManager.updateTask(newTask);
+        final Task newSavedTask = taskManager.getTaskById(taskId);
+        assertEquals(newTask.getDescription(), newSavedTask.getDescription(), "Описание не совпадает");
+        assertEquals("Купить разных продуктов", newSavedTask.getDescription(), "Описание не совпадает");
+        assertNull(savedTask.getDuration(), "Продолжительность не должна быть задана");
+        assertNull(savedTask.getEndTime(), "Время окончания не должно быть задано");
+
         Task newTask1 = new Task("Задача 1", "Купить много продуктов");
         newTask1.setStartTime(LocalDateTime.of(2024, 5, 19, 15, 0));
         newTask1.setId(taskId);
         taskManager.updateTask(newTask1);
-        final Task newSavedTask = taskManager.getTaskById(taskId);
-        assertEquals(newTask1.getStartTime(), newSavedTask.getStartTime(), "Стартовое время не совпадает");
-        assertEquals(LocalDateTime.of(2024, 5, 19, 15, 0), newSavedTask.getStartTime(), "Стартовое время не совпадает");
+        final Task newSavedTask1 = taskManager.getTaskById(taskId);
+        assertEquals(newTask1.getStartTime(), newSavedTask1.getStartTime(), "Стартовое время не совпадает");
+        assertEquals(LocalDateTime.of(2024, 5, 19, 15, 0), newSavedTask1.getStartTime(), "Стартовое время не совпадает");
         assertNull(savedTask.getDuration(), "Продолжительность не должна быть задана");
         assertNull(savedTask.getEndTime(), "Время окончания не должно быть задано");
 

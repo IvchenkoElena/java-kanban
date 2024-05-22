@@ -59,7 +59,6 @@ public class InMemoryTaskManager implements TaskManager {
             if (currentDuration != null) {
                 if (sumDurations != null) {
                     sumDurations = sumDurations.plus(currentDuration);//здесь тоже надо в минутах?
-                    //sumDurations = sumDurations.plusMinutes(currentDuration.toMinutes());
                 } else {
                     sumDurations = currentDuration;
                 }
@@ -132,18 +131,41 @@ public class InMemoryTaskManager implements TaskManager {
                 if (getPrioritizedTasks().stream()
                         .filter(i -> i.getId() != task.getId())
                         .noneMatch(t -> isTimeCross(t, task))) {
-                    prioritizedTasksSet.remove(oldTask);
+                    //if (oldTask.getStartTime() != null) {
+                        prioritizedTasksSet.remove(oldTask);
+                    //}
                     prioritizedTasksSet.add(task);
                 } else {
                     System.out.println("Задача c ID " + task.getId() + " не может быть обновлена, время пересекается");
                     return;
                 }
             } else {
-                prioritizedTasksSet.remove(oldTask);
+                //if (oldTask.getStartTime() != null) {
+                    prioritizedTasksSet.remove(oldTask);
+                //}
             }
             tasks.put(task.getId(), task);
         }
     }
+
+    //Думаю вернуть проверку oldTask перед удалением из списка на наличие времени старта, так как без нее иногда получаю ошибку (при попытке обновить задачу):
+
+    //Exception in thread "main" java.lang.NullPointerException: Cannot invoke "java.lang.Comparable.compareTo(Object)" because the return value of "java.util.function.Function.apply(Object)" is null
+    //	at java.base/java.util.Comparator.lambda$comparing$77a9974f$1(Comparator.java:473)
+    //	at java.base/java.util.TreeMap.getEntryUsingComparator(TreeMap.java:409)
+    //	at java.base/java.util.TreeMap.getEntry(TreeMap.java:379)
+    //	at java.base/java.util.TreeMap.containsKey(TreeMap.java:244)
+    //	at java.base/java.util.TreeSet.contains(TreeSet.java:238)
+    //	at service.InMemoryTaskManager.updateTask(InMemoryTaskManager.java:141)
+    //	at service.FileBackedTaskManager.updateTask(FileBackedTaskManager.java:90)
+    //	at Main.main(Main.java:177)
+
+    // Эта ошибка появляется именно в Main
+    // В тестах мне не удалось воспроизвести такую же ситуацию почему-то
+    // (ситуация, когда пытаюсь обновить задачу, у которой раньше не было задано время старта)
+    // Причем, почему-то, если вызывать такую ситуацию в самом начале main (в 33, в 41, в 47 строке), то все работает нормально
+    // а дальше я не могу понять, что меняется, но вызов такой же ситуации на 98 строке уже приводит к ошибке
+
 
     @Override
     public List<Task> getAllTasksList() {
@@ -195,7 +217,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Epic> getAllEpicsList() {
-        return new ArrayList<>(epics.values()); // тут показывает проблему: Raw use of parameterized class 'ArrayList<>'
+        return new ArrayList<>(epics.values());
     }
 
     @Override
@@ -241,7 +263,7 @@ public class InMemoryTaskManager implements TaskManager {
                     .noneMatch(t -> isTimeCross(t, subtask))) {
                 prioritizedTasksSet.add(subtask);
             } else {
-                System.out.println("Подзадача c ID " + subtask.getId() + " не может быть создана, время пересекается");
+                System.out.println("Новая подзадача не может быть создана, время пересекается");
                 return -1;
             }
         }
@@ -281,7 +303,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Subtask> getAllSubtasksList() {
-        return new ArrayList<>(subtasks.values()); // и здесь такая проблема: Raw use of parameterized class 'ArrayList<>'
+        return new ArrayList<>(subtasks.values());
     }
 
     @Override
