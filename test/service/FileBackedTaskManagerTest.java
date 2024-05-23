@@ -119,19 +119,16 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         assertThrows(ManagerSaveException.class, () -> taskManager.createTask(task));
     }
 
-//    @Test
-//    public void shouldNotThrowManagerSaveException() { //эти методы DoesNotThrow так и не запускаются
-//        Task task = new Task("Задача 1", "Описание задачи 1");
-//        Assertions.assertDoesNotThrow(ManagerSaveException.class, () -> {
-//            taskManager.createTask(task);
-//        });
-//    }
+    @Test
+    public void shouldNotThrowManagerSaveException() { //эти методы DoesNotThrow так и не запускаются
+        Task task = new Task("Задача 1", "Описание задачи 1");
+        assertDoesNotThrow(() -> {
+            taskManager.createTask(task);
+        });
+    }
 
     @Test
-    public void shouldThrowManagerSaveExceptionLoadTest() { //Чтобы этот тест работал,
-        // удалила проверку на существование файла в методе loadFromFile,
-        // не знаю, как правильнее? наверное исключение более информативно
-
+    public void shouldThrowManagerSaveExceptionLoadTest() {
         // Создаем файл с несуществующим путем
         File wrongFile = new File("notExistedPath/wrong.csv");
         assertThrows(ManagerSaveException.class, () -> FileBackedTaskManager.loadFromFile(wrongFile));
@@ -140,11 +137,11 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         assertThrows(ManagerSaveException.class, () -> FileBackedTaskManager.loadFromFile(notExistedFile));
     }
 
-//    @Test
-//    public void shouldNotThrowManagerSaveExceptionLoadTest() { //эти методы DoesNotThrow так и не запускаются
-//        Assertions.assertDoesNotThrow(ManagerSaveException.class, () -> {
-//            FileBackedTaskManager.loadFromFile(saveFile);
-//        });
-//    }
+    @Test
+    public void shouldNotThrowManagerSaveExceptionLoadTest() { //эти методы DoesNotThrow так и не запускаются
+        assertDoesNotThrow(() -> {
+            FileBackedTaskManager.loadFromFile(saveFile);
+        });
+    }
 
 }

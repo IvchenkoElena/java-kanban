@@ -14,10 +14,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
-
-        //if (Files.exists(Paths.get(file.toURI()))) { // мне надо убрать эту проверку, чтобы выбрасывались исключения?
-        // или правильнее будет оставить проверку? Тогда в случае, если файл не существует, у меня вообще ничего не произойдет?
-
         try {
             String fileData = Files.readString(file.toPath());
             String[] lines = fileData.split("\n");
@@ -53,7 +49,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw new ManagerSaveException(e);
         }
-        //}
         return fileBackedTaskManager;
     }
 
