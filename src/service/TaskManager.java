@@ -10,6 +10,8 @@ public interface TaskManager {
 
     HistoryManager getHistoryManager();
 
+    List<Task> getPrioritizedTasks();
+
     int generateId();
 
     int createTask(Task task);
@@ -27,8 +29,6 @@ public interface TaskManager {
     int createEpic(Epic epic);
 
     void updateEpic(Epic epic);
-
-    void determineEpicStatus(int id);
 
     List<Epic> getAllEpicsList();
 

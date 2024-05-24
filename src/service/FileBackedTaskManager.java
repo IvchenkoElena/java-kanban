@@ -4,8 +4,6 @@ import model.*;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File fileToAutoSave;
@@ -14,48 +12,49 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.fileToAutoSave = file;
     }
 
-    // получилось реализовать через Files.readString(file.toPath()), заменила lineSeparator на "\n"
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
-
-        if (Files.exists(Paths.get(file.toURI()))) {
-
-            try {
-                String fileData = Files.readString(file.toPath());
-                String[] lines = fileData.split("\n");
-                int maxId = 0;
-                for (int i = 1; i < lines.length; i++) {
-                    String value = lines[i];
-                    Task task = Converts.fromString(value);
-                    switch (task.getType()) {
-                        case TASK:
-                            fileBackedTaskManager.tasks.put(task.getId(), task);
-                        case SUBTASK:
-                            if (task instanceof Subtask subtask) {
-                                fileBackedTaskManager.subtasks.put(task.getId(), subtask);
-                                Epic myEpic = fileBackedTaskManager.epics.get(subtask.getMyEpicId());
-                                myEpic.getMySubtasksIdList().add(task.getId());
-                            }
-                        case EPIC:
-                            if (task instanceof Epic) {
-                                fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
-                            }
-                    }
-                    if (task.getId() > maxId) {
-                        maxId = task.getId();
-                    }
+        try {
+            String fileData = Files.readString(file.toPath());
+            String[] lines = fileData.split("\n");
+            int maxId = 0;
+            for (int i = 1; i < lines.length; i++) {
+                String value = lines[i];
+                Task task = Converts.fromString(value);
+                switch (task.getType()) {
+                    case TASK:
+                        fileBackedTaskManager.tasks.put(task.getId(), task);
+                        if (task.getStartTime() != null && task.getEndTime() != null) {
+                            fileBackedTaskManager.prioritizedTasksSet.add(task);
+                        }
+                        break;
+                    case SUBTASK:
+                        Subtask subtask = (Subtask) task;
+                        fileBackedTaskManager.subtasks.put(task.getId(), subtask);
+                        if (task.getStartTime() != null && task.getEndTime() != null) {
+                            fileBackedTaskManager.prioritizedTasksSet.add(task);
+                        }
+                        Epic myEpic = fileBackedTaskManager.epics.get(subtask.getMyEpicId());
+                        myEpic.getMySubtasksIdList().add(task.getId());
+                        break;
+                    case EPIC:
+                        fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
+                        break;
                 }
-                fileBackedTaskManager.id = maxId;
-            } catch (IOException e) {
-                throw new ManagerSaveException(e);
+                if (task.getId() > maxId) {
+                    maxId = task.getId();
+                }
             }
+            fileBackedTaskManager.generatedId = maxId;
+        } catch (IOException e) {
+            throw new ManagerSaveException(e);
         }
         return fileBackedTaskManager;
     }
 
     private void save() {
         try (Writer writer = new FileWriter(fileToAutoSave)) {
-            String firstLine = "id,type,name,status,description,epic";
+            String firstLine = "id,type,name,status,description,start,duration,end,epic";
             writer.write(firstLine + "\n");
             for (Task task : tasks.values()) {
                 String convertedString = Converts.convertToString(task);

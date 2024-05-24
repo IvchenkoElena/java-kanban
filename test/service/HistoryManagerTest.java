@@ -8,7 +8,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 class HistoryManagerTest {
     private HistoryManager historyManager;
     Task task;
@@ -22,6 +21,12 @@ class HistoryManagerTest {
         task = new Task("Задача 1", "Описание задачи 1");
         task2 = new Task("Задача 2", "Описание задачи 2");
         task3 = new Task("Задача 3", "Описание задачи 3");
+    }
+
+    @Test
+    void emptyHistory() {
+        List<Task> emptyHistory = historyManager.getHistory();
+        assertEquals(0, emptyHistory.size(), "История должна быть пуста");
     }
 
     @Test
@@ -49,10 +54,8 @@ class HistoryManagerTest {
         assertNotEquals(task.getName(), history1.getFirst().getName(), "В истории не должно быть задачи 1");
     }
 
-
     @Test
     void removeFirst() {
-
         task.setId(1);
         historyManager.add(task);
         task2.setId(2);
@@ -69,7 +72,6 @@ class HistoryManagerTest {
 
     @Test
     void removeLast() {
-
         task.setId(1);
         historyManager.add(task);
         task2.setId(2);
@@ -86,7 +88,6 @@ class HistoryManagerTest {
 
     @Test
     void removeMiddle() {
-
         task.setId(1);
         historyManager.add(task);
         task2.setId(2);
@@ -105,7 +106,6 @@ class HistoryManagerTest {
 
     @Test
     void getHistory() {
-
         task.setId(1);
         historyManager.add(task);
         task2.setId(2);

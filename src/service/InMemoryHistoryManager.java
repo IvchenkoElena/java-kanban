@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class InMemoryHistoryManager implements HistoryManager {
 
     static class Node {
@@ -23,11 +22,11 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
-    private Map<Integer, Node> linkedHistoryMap = new HashMap<>();
+    private Map<Integer, Node> linkedHistoryMap = new HashMap<>(); // Здесь предлагает: Warning:(25, 32) Field 'linkedHistoryMap' may be 'final'
     private Node head;
     private Node tail;
 
-    public Node linkLast(Task task) {
+    private Node linkLast(Task task) { //пишет тут проблему: Warning:(29, 12) Class 'Node' is exposed outside its defined visibility scope
         final Node newNode = new Node(tail, task, null);
         if (tail == null)
             head = newNode;
@@ -78,6 +77,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
+
         List<Task> tasksList = new ArrayList<>();
         Node currentNode = head;
         while (currentNode != null) {
