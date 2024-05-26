@@ -115,7 +115,8 @@ public class InMemoryTaskManager implements TaskManager {
                 prioritizedTasksSet.add(task);
             } else {
                 System.out.println("Новая задача не может быть создана, время пересекается");
-                return -1;
+                throw new IntersectionException("Новая задача не может быть создана, время пересекается");
+                //return -1;
             }
         }
         task.setId(generateId());
@@ -135,7 +136,8 @@ public class InMemoryTaskManager implements TaskManager {
                     prioritizedTasksSet.add(task);
                 } else {
                     System.out.println("Задача c ID " + task.getId() + " не может быть обновлена, время пересекается");
-                    return;
+                    throw new IntersectionException("Задача c ID " + task.getId() + " не может быть обновлена, время пересекается");
+                    //return;
                 }
             } else {
                 prioritizedTasksSet.remove(oldTask);
@@ -241,7 +243,8 @@ public class InMemoryTaskManager implements TaskManager {
                 prioritizedTasksSet.add(subtask);
             } else {
                 System.out.println("Новая подзадача не может быть создана, время пересекается");
-                return -1;
+                throw new IntersectionException("Новая подзадача не может быть создана, время пересекается");
+                //return -1;
             }
         }
         subtask.setId(generateId());
@@ -268,7 +271,8 @@ public class InMemoryTaskManager implements TaskManager {
                     prioritizedTasksSet.add(subtask);
                 } else {
                     System.out.println("Подзадача c ID " + subtask.getId() + " не может быть обновлена, время пересекается");
-                    return;
+                    throw new IntersectionException("Подзадача c ID " + subtask.getId() + " не может быть обновлена, время пересекается");
+                    //return;
                 }
             } else {
                 prioritizedTasksSet.remove(oldSubtask);

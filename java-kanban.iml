@@ -61,5 +61,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="google.http.client.gson" level="project" />
   </component>
 </module>

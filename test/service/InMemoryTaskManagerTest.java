@@ -5,6 +5,7 @@ import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.InMemoryTaskManager;
+import service.IntersectionException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -269,7 +270,11 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         Task task3 = new Task("Test addNewTask3", "Test addNewTask3 description");
         task3.setStartTime(LocalDateTime.of(2024, 5, 20, 9, 30));
         task3.setDuration(Duration.ofMinutes(10));
-        final int task3Id = taskManager.createTask(task3);
+        try {
+            taskManager.createTask(task3);
+        } catch (IntersectionException exception) {
+            System.out.println("Поймано исключение пересечения: " + exception.getMessage());
+        }
 
         Task task4 = new Task("Test addNewTask4", "Test addNewTask4 description");
         task4.setStartTime(LocalDateTime.of(2024, 5, 21, 8, 30));
@@ -279,8 +284,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertTrue(taskManager.getPrioritizedTasks().contains(task1), "Задача1 должна быть в сортированном списке");
         assertNotNull(taskManager.getTaskById(task2Id), "Непересекающаяся задача должна записываться в HashMap");
         assertTrue(taskManager.getPrioritizedTasks().contains(task2), "Задача2  должна быть в сортированном списке");
-        assertEquals(-1, task3Id, "Пересекающейся задаче должен присваиваться id -1");
-        assertNull(taskManager.getTaskById(task3Id), "Пересекающаяся задача не должна записываться в HashMap");
+        assertFalse(taskManager.getAllTasksList().contains(task3), "Пересекающаяся задача не должна записываться в HashMap");
         assertFalse(taskManager.getPrioritizedTasks().contains(task3), "Пересекающаяся задаче не должна записываться в сортированный список");
         assertTrue(taskManager.getAllTasksList().contains(taskManager.getTaskById(task4Id)), "Задача4 без продолжительности должна записываться в HashMap");
         assertFalse(taskManager.getPrioritizedTasks().contains(task4), "Задача4 без продолжительности не должна записываться в сортированный список");
@@ -289,7 +293,11 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         updatedTask1ver1.setStartTime(LocalDateTime.of(2024, 5, 20, 8, 10));
         updatedTask1ver1.setDuration(Duration.ofMinutes(60));
         updatedTask1ver1.setId(task1Id);
-        taskManager.updateTask(updatedTask1ver1);
+        try {
+            taskManager.updateTask(updatedTask1ver1);
+        } catch (IntersectionException exception) {
+            System.out.println("Поймано исключение пересечения: " + exception.getMessage());
+        }
 
         assertNotEquals(updatedTask1ver1.getStartTime(), taskManager.getTaskById(task1Id).getStartTime(), "Пересекающаяся задача не должна записываться в HashMap");
         assertEquals(task1.getStartTime(), taskManager.getTaskById(task1Id).getStartTime(), "В HashMap должна остаться старая версия задачи с ID1");

@@ -2,6 +2,7 @@ import model.Task;
 import model.Epic;
 import model.Subtask;
 import model.Status;
+import service.IntersectionException;
 import service.Managers;
 import service.TaskManager;
 
@@ -16,7 +17,7 @@ public class Main {
         System.out.println("Поехали!");
         File file = Path.of("src/database/file.csv").toFile();
 
-        final TaskManager taskManager = Managers.getDefault(file);
+        final TaskManager taskManager = Managers.getInMemoryDefault();
 
         System.out.println("Проверочный вызов пустого принта");
         printAllTasks(taskManager);
@@ -39,13 +40,13 @@ public class Main {
         task33.setStartTime(LocalDateTime.of(2024, 5, 19, 12, 15));
         task33.setDuration(Duration.ofMinutes(90));
         taskManager.updateTask(task33);
-        System.out.println("3 принта");
+        System.out.println("Вызов 3 принта");
         printAllTasks(taskManager);
 
         Task task55 = new Task("Задача 5", "Вынести мусор5");
         task55.setId(1);
         taskManager.updateTask(task55);
-        System.out.println("4 принта");
+        System.out.println("Вызов 4 принта");
         printAllTasks(taskManager);
 
         System.out.println("Напечатаем задачи (не сохраненные в мапу):");
@@ -107,7 +108,11 @@ public class Main {
         newFurniture.setStartTime(LocalDateTime.of(2024, 5, 25, 12, 30));
         newFurniture.setDuration(Duration.ofMinutes(90));
         newFurniture.setId(5);
-        taskManager.updateSubtask(newFurniture);
+        try {
+            taskManager.updateSubtask(newFurniture);
+        } catch (IntersectionException exception) {
+            System.out.println("Поймано исключение пересечения: " + exception.getMessage());
+        }
         Subtask newTickets = new Subtask("Билеты", "Найти выгодные даты", vacationId);
         newTickets.setStatus(Status.DONE);
         newTickets.setId(7);
