@@ -163,19 +163,24 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById(int id) {
-        historyManager.add(tasks.get(id));
-        return tasks.get(id);
+        if (tasks.containsKey(id)) {
+            historyManager.add(tasks.get(id));
+            return tasks.get(id);
+        } else {
+            throw new NotFoundException("Нет задачи с id " + id);
+        }
     }
 
     @Override
     public void deleteTaskById(int id) {
-        Task task = tasks.get(id);
-        if (task == null) {
-            return;
+        try {
+            Task task = getTaskById(id);
+            tasks.remove(id);
+            historyManager.remove(id);
+            prioritizedTasksSet.remove(task);
+        } catch (NotFoundException exception) {
+            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
         }
-        tasks.remove(id);
-        historyManager.remove(id);
-        prioritizedTasksSet.remove(task);
     }
 
     @Override
@@ -216,23 +221,28 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpicById(int id) {
-        historyManager.add(epics.get(id));
-        return epics.get(id);
+        if (epics.containsKey(id)) {
+            historyManager.add(epics.get(id));
+            return epics.get(id);
+        } else {
+            throw new NotFoundException("Нет эпика с id " + id);
+        }
     }
 
     @Override
     public void deleteEpicById(int id) {
-        if (epics.get(id) == null) {
-            return;
+        try {
+            List<Integer> mySubtaskIdList = getEpicById(id).getMySubtasksIdList();
+            for (Integer subtaskId : mySubtaskIdList) {
+                historyManager.remove(subtaskId);
+                prioritizedTasksSet.remove(subtasks.get(subtaskId));
+                subtasks.remove(subtaskId);
+            }
+            historyManager.remove(id);
+            epics.remove(id);
+        } catch (NotFoundException exception) {
+            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
         }
-        List<Integer> mySubtaskIdList = epics.get(id).getMySubtasksIdList();
-        for (Integer subtaskId : mySubtaskIdList) {
-            historyManager.remove(subtaskId);
-            prioritizedTasksSet.remove(subtasks.get(subtaskId));
-            subtasks.remove(subtaskId);
-        }
-        historyManager.remove(id);
-        epics.remove(id);
     }
 
     @Override
@@ -303,29 +313,38 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtaskById(int id) {
-        historyManager.add(subtasks.get(id));
-        return subtasks.get(id);
+        if (subtasks.containsKey(id)) {
+            historyManager.add(subtasks.get(id));
+            return subtasks.get(id);
+        } else {
+            throw new NotFoundException("Нет подзадачи с id " + id);
+        }
     }
 
     @Override
     public void deleteSubtaskById(int id) {
-        Subtask subtask = subtasks.get(id);
-        if (subtask == null) {
-            return;
+        try {
+            Subtask subtask = getSubtaskById(id);
+            prioritizedTasksSet.remove(subtask);
+            if (subtasks.containsKey(id)) {
+                epics.get(subtasks.get(id).getMyEpicId()).getMySubtasksIdList().remove(Integer.valueOf(id));
+                determineEpicParameters(subtasks.get(id).getMyEpicId());
+            }
+            historyManager.remove(id);
+            subtasks.remove(id);
+        } catch (NotFoundException exception) {
+            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
         }
-        prioritizedTasksSet.remove(subtask);
-        if (subtasks.containsKey(id)) {
-            epics.get(subtasks.get(id).getMyEpicId()).getMySubtasksIdList().remove(Integer.valueOf(id));
-            determineEpicParameters(subtasks.get(id).getMyEpicId());
-        }
-        historyManager.remove(id);
-        subtasks.remove(id);
     }
 
     @Override
     public List<Subtask> getMySubtasksListByEpicId(int id) {
-        return epics.get(id).getMySubtasksIdList().stream()
-                .map(subtasks::get)
-                .collect(Collectors.toList());
+        if (epics.containsKey(id)) {
+            return getEpicById(id).getMySubtasksIdList().stream()
+                    .map(subtasks::get)
+                    .collect(Collectors.toList());
+        } else {
+            throw new NotFoundException("Нет эпика с id " + id);
+        }
     }
 }

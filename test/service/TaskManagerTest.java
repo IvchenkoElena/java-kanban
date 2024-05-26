@@ -97,9 +97,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         taskManager.deleteTaskById(taskId);
 
-        final Task newSavedTask = taskManager.getTaskById(taskId);
-
-        assertNull(newSavedTask, "Задача не удалилась.");
+        assertFalse(taskManager.getAllTasksList().contains(task), "Задача не удалилась.");
     }
 
     @Test
@@ -192,7 +190,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         taskManager.deleteEpicById(epic1Id);
 
-        assertNull(taskManager.getEpicById(epic1Id), "Задачи недолжно быть");
+        assertFalse(taskManager.getAllEpicsList().contains(epic1), "Задачи недолжно быть");
     }
 
     @Test

@@ -4,6 +4,7 @@ import model.Subtask;
 import model.Status;
 import service.IntersectionException;
 import service.Managers;
+import service.NotFoundException;
 import service.TaskManager;
 
 import java.io.File;
@@ -22,6 +23,11 @@ public class Main {
         System.out.println("Проверочный вызов пустого принта");
         printAllTasks(taskManager);
 
+        try {
+            taskManager.getTaskById(90);
+        } catch (NotFoundException exception) {
+            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
+        }
 
         Task task11 = new Task("Задача 1", "Купить продукты");
         final int taskId = taskManager.createTask(task11);
@@ -57,7 +63,13 @@ public class Main {
         System.out.println(taskOne);
         System.out.println(taskTwo);
         System.out.println("вызываем несуществующую в мапе задачу:");
-        taskManager.getTaskById(17);
+        try {
+            taskManager.getTaskById(17);
+            taskManager.getTaskById(90);
+        } catch (NotFoundException exception) {
+            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
+        }
+
         System.out.println("первый вызов принта (в мапах и в истории ничего нет)");
         printAllTasks(taskManager);
 
@@ -90,8 +102,12 @@ public class Main {
         System.out.println("второй вызов принта");
         printAllTasks(taskManager);
 
-        taskManager.getSubtaskById(7);
-        taskManager.getTaskById(1);
+        try {
+            taskManager.getSubtaskById(7);
+            taskManager.getTaskById(1);
+        } catch (NotFoundException exception) {
+            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
+        }
         Task task3 = new Task("Задача 3", "Вынести мусор3");
         task3.setId(1);
         task3.setStartTime(LocalDateTime.of(2024, 5, 12, 12, 15));
@@ -121,7 +137,11 @@ public class Main {
         printAllTasks(taskManager);
 
         System.out.println("вызываем несуществующую в мапе задачу:");
-        taskManager.getTaskById(9);
+        try {
+            taskManager.getTaskById(9);
+        } catch (NotFoundException exception) {
+            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
+        }
         System.out.println("третий вызов принта");
         printAllTasks(taskManager);
 
@@ -143,7 +163,12 @@ public class Main {
         System.out.println(newTask1);
         System.out.println("Обновленная задача 2");
         System.out.println(task2);
-        taskManager.getEpicById(3);
+        try {
+            taskManager.getEpicById(3);
+        } catch (NotFoundException exception) {
+            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
+        }
+
         System.out.println("четверый вызов принта");
         printAllTasks(taskManager);
 
@@ -163,7 +188,7 @@ public class Main {
         System.out.println();
         System.out.println(("вызов начально принта восстановления из файла").toUpperCase());
         printAllTasks(taskManager2);
-        Task task8 = new Task("Задача 8", "Вынести мусор, опять?");
+        Task task8 = new Task("Задача 8", "Вынести мусор опять?");
         taskManager2.createTask(task8);
         System.out.println("вызов первого принта из файла");
         printAllTasks(taskManager2);
