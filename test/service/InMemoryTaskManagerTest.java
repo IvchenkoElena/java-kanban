@@ -275,6 +275,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         } catch (IntersectionException exception) {
             System.out.println("Поймано исключение пересечения: " + exception.getMessage());
         }
+        assertThrows(IntersectionException.class, () -> taskManager.createTask(task3));
 
         Task task4 = new Task("Test addNewTask4", "Test addNewTask4 description");
         task4.setStartTime(LocalDateTime.of(2024, 5, 21, 8, 30));
@@ -298,6 +299,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         } catch (IntersectionException exception) {
             System.out.println("Поймано исключение пересечения: " + exception.getMessage());
         }
+        assertThrows(IntersectionException.class, () -> taskManager.updateTask(updatedTask1ver1));
 
         assertNotEquals(updatedTask1ver1.getStartTime(), taskManager.getTaskById(task1Id).getStartTime(), "Пересекающаяся задача не должна записываться в HashMap");
         assertEquals(task1.getStartTime(), taskManager.getTaskById(task1Id).getStartTime(), "В HashMap должна остаться старая версия задачи с ID1");

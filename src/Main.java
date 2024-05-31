@@ -1,3 +1,8 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import model.Task;
 import model.Epic;
 import model.Subtask;
@@ -8,9 +13,11 @@ import service.NotFoundException;
 import service.TaskManager;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Main {
 
@@ -18,7 +25,12 @@ public class Main {
         System.out.println("Поехали!");
         File file = Path.of("src/database/file.csv").toFile();
 
-        final TaskManager taskManager = Managers.getInMemoryDefault();
+        //final TaskManager taskManager = Managers.getInMemoryDefault();
+        final TaskManager taskManager = Managers.getDefault(file);
+
+        Task tasktest = new Task("Задача 18", "Вынести мусор");
+        System.out.println(tasktest);
+
 
         System.out.println("Проверочный вызов пустого принта");
         printAllTasks(taskManager);
@@ -118,7 +130,11 @@ public class Main {
         newWall.setStartTime(LocalDateTime.of(2024, 5, 25, 12, 0));
         newWall.setDuration(Duration.ofMinutes(90));
         newWall.setId(4);
-        taskManager.updateSubtask(newWall);
+        try {
+            taskManager.updateSubtask(newWall);
+        } catch (NotFoundException exception) {
+            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
+        }
         Subtask newFurniture = new Subtask("Мебель", "Заказать", renovation2Id);
         newFurniture.setStatus(Status.DONE);
         newFurniture.setStartTime(LocalDateTime.of(2024, 5, 25, 12, 30));
@@ -132,7 +148,12 @@ public class Main {
         Subtask newTickets = new Subtask("Билеты", "Найти выгодные даты", vacationId);
         newTickets.setStatus(Status.DONE);
         newTickets.setId(7);
-        taskManager.updateSubtask(newTickets);
+        try {
+            taskManager.updateSubtask(newTickets);
+        } catch (NotFoundException exception) {
+            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
+        }
+
         System.out.println("Второй с половиной вызов принта");
         printAllTasks(taskManager);
 
@@ -172,13 +193,25 @@ public class Main {
         System.out.println("четверый вызов принта");
         printAllTasks(taskManager);
 
-        taskManager.deleteSubtaskById(4);
-        taskManager.deleteSubtaskById(7);
+        try {
+            taskManager.deleteSubtaskById(4);
+            taskManager.deleteSubtaskById(7);
+        } catch (NotFoundException exception) {
+            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
+        }
+
+
         System.out.println("четверый с половиной вызов принта");
         printAllTasks(taskManager);
 
-        taskManager.deleteEpicById(6);
-        taskManager.getSubtaskById(5);
+        try {
+            taskManager.deleteEpicById(6);
+            taskManager.getSubtaskById(5);
+        } catch (NotFoundException exception) {
+            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
+        }
+
+
         taskManager.getTaskById(1);
         System.out.println("пятый вызов принта");
         printAllTasks(taskManager);
@@ -190,6 +223,7 @@ public class Main {
         printAllTasks(taskManager2);
         Task task8 = new Task("Задача 8", "Вынести мусор опять?");
         taskManager2.createTask(task8);
+        taskManager2.getTaskById(2);
         System.out.println("вызов первого принта из файла");
         printAllTasks(taskManager2);
 
@@ -212,6 +246,45 @@ public class Main {
 
         System.out.println("вызов третьего принта из файла");
         printAllTasks(taskManager2);
+
+        System.out.println("ЗАКОНЧИЛИ!!!");
+        System.out.println();
+
+
+
+
+
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
+        gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
+        gsonBuilder.setPrettyPrinting();
+        Gson gson = gsonBuilder.create();
+
+//        Gson gson = new GsonBuilder()
+//                .setPrettyPrinting()
+//                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+//                .registerTypeAdapter(Duration.class, new DurationAdapter())
+//                .create();
+
+        String response = gson.toJson(taskManager.getTaskById(1));
+        System.out.println(response);
+
+        response = gson.toJson(taskManager.getSubtaskById(5));
+        System.out.println(response);
+
+        response = gson.toJson(taskManager.getSubtaskById(6));
+        System.out.println(response);
+
+        response = gson.toJson(taskManager.getSubtaskById(8));
+        System.out.println(response);
+
+        response = gson.toJson(taskManager.getEpicById(4));
+        System.out.println(response);
+
+        response = gson.toJson(taskManager.getEpicById(7));
+        System.out.println(response);
+
     }
 
     private static void printAllTasks(TaskManager manager) {
@@ -242,4 +315,53 @@ public class Main {
             System.out.println(task);
         }
     }
+
 }
+
+
+
+
+
+
+class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); //не обязательно здесь делать отдельный форматтер?
+    // можно воспользоваться готовым форматером из Converts?
+
+    @Override
+    public void write(final JsonWriter jsonWriter, final LocalDateTime localDateTime) throws IOException {
+        if(localDateTime == null){
+            jsonWriter.nullValue();
+            return;
+        }
+        jsonWriter.value(localDateTime.format(dtf));
+    }
+
+    @Override
+    public LocalDateTime read(final JsonReader jsonReader) throws IOException {
+        if (jsonReader == null) {
+            return null;
+        }
+        return LocalDateTime.parse(jsonReader.nextString(), dtf);
+    }
+}
+
+class DurationAdapter extends TypeAdapter<Duration> { //вариант в минутах
+
+    @Override
+    public void write(final JsonWriter jsonWriter, final Duration duration) throws IOException {
+        if(duration == null){
+            jsonWriter.nullValue();
+            return;
+        }
+        jsonWriter.value(Long.valueOf(duration.toMinutes()).toString());
+    }
+
+    @Override
+    public Duration read(final JsonReader jsonReader) throws IOException {
+        if (jsonReader == null) {
+            return null;
+        }
+        return Duration.ofMinutes(Long.parseLong(jsonReader.nextString()));
+    }
+}
+

@@ -116,7 +116,6 @@ public class InMemoryTaskManager implements TaskManager {
             } else {
                 System.out.println("Новая задача не может быть создана, время пересекается");
                 throw new IntersectionException("Новая задача не может быть создана, время пересекается");
-                //return -1;
             }
         }
         task.setId(generateId());
@@ -137,12 +136,13 @@ public class InMemoryTaskManager implements TaskManager {
                 } else {
                     System.out.println("Задача c ID " + task.getId() + " не может быть обновлена, время пересекается");
                     throw new IntersectionException("Задача c ID " + task.getId() + " не может быть обновлена, время пересекается");
-                    //return;
                 }
             } else {
                 prioritizedTasksSet.remove(oldTask);
             }
             tasks.put(task.getId(), task);
+        } else {
+            throw new NotFoundException("Задача для обновления c ID " + task.getId() + " не обнаружена");
         }
     }
 
@@ -167,19 +167,19 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(tasks.get(id));
             return tasks.get(id);
         } else {
-            throw new NotFoundException("Нет задачи с id " + id);
+            throw new NotFoundException("Задача с id " + id + " не обнаружена");
         }
     }
 
     @Override
     public void deleteTaskById(int id) {
-        try {
+        if (tasks.containsKey(id)) {
             Task task = getTaskById(id);
             tasks.remove(id);
             historyManager.remove(id);
             prioritizedTasksSet.remove(task);
-        } catch (NotFoundException exception) {
-            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
+        } else {
+            throw new NotFoundException("Задача для удаления с id " + id + " не обнаружена");
         }
     }
 
@@ -196,6 +196,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (epics.containsKey(epic.getId())) {
             epics.put(epic.getId(), epic);
             determineEpicParameters(generatedId);
+        } else {
+            throw new NotFoundException("Эпик для обновления с id " + epic.getId() + " не обнаружен");
         }
     }
 
@@ -225,13 +227,13 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(epics.get(id));
             return epics.get(id);
         } else {
-            throw new NotFoundException("Нет эпика с id " + id);
+            throw new NotFoundException("Эпик с id " + id + " не обнаружен");
         }
     }
 
     @Override
     public void deleteEpicById(int id) {
-        try {
+        if (epics.containsKey(id)) {
             List<Integer> mySubtaskIdList = getEpicById(id).getMySubtasksIdList();
             for (Integer subtaskId : mySubtaskIdList) {
                 historyManager.remove(subtaskId);
@@ -240,8 +242,8 @@ public class InMemoryTaskManager implements TaskManager {
             }
             historyManager.remove(id);
             epics.remove(id);
-        } catch (NotFoundException exception) {
-            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
+        } else {
+            throw new NotFoundException("Эпик для удаления с id " + id + " не обнаружен");
         }
     }
 
@@ -254,7 +256,6 @@ public class InMemoryTaskManager implements TaskManager {
             } else {
                 System.out.println("Новая подзадача не может быть создана, время пересекается");
                 throw new IntersectionException("Новая подзадача не может быть создана, время пересекается");
-                //return -1;
             }
         }
         subtask.setId(generateId());
@@ -269,6 +270,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         if (subtask == null) {
+            // а почему я не проверяю на null в других методах поданные задачи?
+            // может тоже надо исключение?
             return;
         }
         if (subtasks.containsKey(subtask.getId())) {
@@ -282,13 +285,14 @@ public class InMemoryTaskManager implements TaskManager {
                 } else {
                     System.out.println("Подзадача c ID " + subtask.getId() + " не может быть обновлена, время пересекается");
                     throw new IntersectionException("Подзадача c ID " + subtask.getId() + " не может быть обновлена, время пересекается");
-                    //return;
                 }
             } else {
                 prioritizedTasksSet.remove(oldSubtask);
             }
             subtasks.put(subtask.getId(), subtask);
             determineEpicParameters(subtask.getMyEpicId());
+        } else {
+        throw new NotFoundException("Подзадача для обновления с id " + subtask.getId() + " не обнаружена");
         }
     }
 
@@ -317,13 +321,13 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(subtasks.get(id));
             return subtasks.get(id);
         } else {
-            throw new NotFoundException("Нет подзадачи с id " + id);
+            throw new NotFoundException("Подзадача с id " + id + " не обнаружена");
         }
     }
 
     @Override
     public void deleteSubtaskById(int id) {
-        try {
+        if (subtasks.containsKey(id)) {
             Subtask subtask = getSubtaskById(id);
             prioritizedTasksSet.remove(subtask);
             if (subtasks.containsKey(id)) {
@@ -332,19 +336,19 @@ public class InMemoryTaskManager implements TaskManager {
             }
             historyManager.remove(id);
             subtasks.remove(id);
-        } catch (NotFoundException exception) {
-            System.out.println("Поймано NotFound исключение: " + exception.getMessage());
+        } else {
+            throw new NotFoundException("Подзадача для обновления с id " + id + " не обнаружена");
         }
     }
 
     @Override
     public List<Subtask> getMySubtasksListByEpicId(int id) {
         if (epics.containsKey(id)) {
-            return getEpicById(id).getMySubtasksIdList().stream()
+            return epics.get(id).getMySubtasksIdList().stream()
                     .map(subtasks::get)
                     .collect(Collectors.toList());
         } else {
-            throw new NotFoundException("Нет эпика с id " + id);
+            throw new NotFoundException("Эпик с id " + id + "не обнаружен");
         }
     }
 }
