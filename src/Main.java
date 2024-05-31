@@ -1,8 +1,8 @@
+import HTTP.DurationAdapter;
+import HTTP.LocalDateTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
+
 import model.Task;
 import model.Epic;
 import model.Subtask;
@@ -13,11 +13,9 @@ import service.NotFoundException;
 import service.TaskManager;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class Main {
 
@@ -250,22 +248,17 @@ public class Main {
         System.out.println("ЗАКОНЧИЛИ!!!");
         System.out.println();
 
-
-
-
-
-
-        GsonBuilder gsonBuilder = new GsonBuilder();
+        /*GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
         gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
         gsonBuilder.setPrettyPrinting();
-        Gson gson = gsonBuilder.create();
+        Gson gson = gsonBuilder.create();*/
 
-//        Gson gson = new GsonBuilder()
-//                .setPrettyPrinting()
-//                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-//                .registerTypeAdapter(Duration.class, new DurationAdapter())
-//                .create();
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .registerTypeAdapter(Duration.class, new DurationAdapter())
+                .create();
 
         String response = gson.toJson(taskManager.getTaskById(1));
         System.out.println(response);
@@ -284,7 +277,6 @@ public class Main {
 
         response = gson.toJson(taskManager.getEpicById(7));
         System.out.println(response);
-
     }
 
     private static void printAllTasks(TaskManager manager) {
@@ -315,53 +307,4 @@ public class Main {
             System.out.println(task);
         }
     }
-
 }
-
-
-
-
-
-
-class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
-    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); //не обязательно здесь делать отдельный форматтер?
-    // можно воспользоваться готовым форматером из Converts?
-
-    @Override
-    public void write(final JsonWriter jsonWriter, final LocalDateTime localDateTime) throws IOException {
-        if(localDateTime == null){
-            jsonWriter.nullValue();
-            return;
-        }
-        jsonWriter.value(localDateTime.format(dtf));
-    }
-
-    @Override
-    public LocalDateTime read(final JsonReader jsonReader) throws IOException {
-        if (jsonReader == null) {
-            return null;
-        }
-        return LocalDateTime.parse(jsonReader.nextString(), dtf);
-    }
-}
-
-class DurationAdapter extends TypeAdapter<Duration> { //вариант в минутах
-
-    @Override
-    public void write(final JsonWriter jsonWriter, final Duration duration) throws IOException {
-        if(duration == null){
-            jsonWriter.nullValue();
-            return;
-        }
-        jsonWriter.value(Long.valueOf(duration.toMinutes()).toString());
-    }
-
-    @Override
-    public Duration read(final JsonReader jsonReader) throws IOException {
-        if (jsonReader == null) {
-            return null;
-        }
-        return Duration.ofMinutes(Long.parseLong(jsonReader.nextString()));
-    }
-}
-
