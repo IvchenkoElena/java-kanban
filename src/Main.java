@@ -1,5 +1,5 @@
-import HTTP.DurationAdapter;
-import HTTP.LocalDateTimeAdapter;
+import http.DurationAdapter;
+import http.LocalDateTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
