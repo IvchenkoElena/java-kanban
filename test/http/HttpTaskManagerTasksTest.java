@@ -22,7 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class HttpTaskManagerTasksTest { //остальные тесты еще дописываю
+public class HttpTaskManagerTasksTest {
 
     // создаём экземпляр InMemoryTaskManager
     TaskManager manager = new InMemoryTaskManager();
