@@ -89,10 +89,9 @@ public class Task {
         }
     }
 
-    public static boolean taskFieldsEquals(Task task1, Task task2) {
+    public static boolean taskFieldsExceptIdEquals(Task task1, Task task2) {
         return task1.getName().equals(task2.getName()) &&
                 task1.getDescription().equals(task2.getDescription()) &&
-                task1.getId() == task2.getId() &&
                 task1.getStatus().equals(task2.getStatus()) &&
                 task1.getDuration().equals(task2.getDuration()) &&
                 task1.getStartTime().equals(task2.getStartTime());

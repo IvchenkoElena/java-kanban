@@ -27,7 +27,9 @@ public class HttpTaskManagerTasksTest { //для первого ревью от�
     // создаём экземпляр InMemoryTaskManager
     TaskManager manager = new InMemoryTaskManager();
     // передаём его в качестве аргумента в конструктор HttpTaskServer
-    HttpTaskServer taskServer = new HttpTaskServer(manager);
+    HttpTaskServer taskServer = new HttpTaskServer(manager); //тут подчеркивается предупреждение
+    // Instantiation of utility class 'HttpTaskServer'
+    // но я не знаю как по-другому можно вызвать нужный конструктор
     Gson gson = HttpTaskServer.getGson();
 
     public HttpTaskManagerTasksTest() {
@@ -41,19 +43,21 @@ public class HttpTaskManagerTasksTest { //для первого ревью от�
         manager.deleteAllTasks();
         manager.deleteAllSubtasks();
         manager.deleteAllEpics();
-        taskServer.start();
+        //taskServer.start(); //ыло предупреждение, поменяла на вызов через указание класса, или так не надо было?
+        HttpTaskServer.start();
     }
 
     @AfterEach
     public void shutDown() {
-        taskServer.stop();
+        //taskServer.stop();
+        HttpTaskServer.stop();
     }
 
     @Test
     public void testAddTask() throws IOException, InterruptedException {
         // создаём задачу
         Task task = new Task("Test 2", "Testing task 2",
-                Status.NEW, Duration.ofMinutes(5), LocalDateTime.now());
+                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 2, 15, 0));
         // конвертируем её в JSON
         String taskJson = gson.toJson(task);
 
@@ -73,6 +77,7 @@ public class HttpTaskManagerTasksTest { //для первого ревью от�
         assertNotNull(tasksFromManager, "Задачи не возвращаются");
         assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
         assertEquals("Test 2", tasksFromManager.getFirst().getName(), "Некорректное имя задачи");
+        assertTrue(Task.taskFieldsExceptIdEquals(task, tasksFromManager.getFirst()), "Некорректные поля задачи");
     }
 
 
@@ -114,11 +119,11 @@ public class HttpTaskManagerTasksTest { //для первого ревью от�
         List<Task> tasksFromManager = manager.getAllTasksList();
         List<Task> tasksFromResponse = gson.fromJson(response.body(), new TaskListTypeToken().getType());
 
-        assertTrue(Task.taskFieldsEquals(tasksFromManager.get(0), tasksFromResponse.get(0)), "Поля задач не совпадают");
+        assertTrue(Task.taskFieldsExceptIdEquals(tasksFromManager.get(0), tasksFromResponse.get(0)), "Поля задач не совпадают");
         assertEquals(tasksFromManager.get(0), tasksFromResponse.get(0), "Задачи не совпадают");
-        assertTrue(Task.taskFieldsEquals(tasksFromManager.get(1), tasksFromResponse.get(1)), "Поля задач не совпадают");
+        assertTrue(Task.taskFieldsExceptIdEquals(tasksFromManager.get(1), tasksFromResponse.get(1)), "Поля задач не совпадают");
         assertEquals(tasksFromManager.get(1), tasksFromResponse.get(1), "Задачи не совпадают");
-        assertTrue(Task.taskFieldsEquals(tasksFromManager.get(2), tasksFromResponse.get(2)), "Поля задач не совпадают");
+        assertTrue(Task.taskFieldsExceptIdEquals(tasksFromManager.get(2), tasksFromResponse.get(2)), "Поля задач не совпадают");
         assertEquals(tasksFromManager.get(2), tasksFromResponse.get(2), "Задачи не совпадают");
     }
 
@@ -153,7 +158,7 @@ public class HttpTaskManagerTasksTest { //для первого ревью от�
 
         Task taskFromResponse = gson.fromJson(response.body(), Task.class);
 
-        assertTrue(Task.taskFieldsEquals(manager.getTaskById(2), taskFromResponse),
+        assertTrue(Task.taskFieldsExceptIdEquals(manager.getTaskById(2), taskFromResponse),
                 "Поля задач не совпадают");
         assertEquals(manager.getTaskById(2), taskFromResponse, "Задачи не совпадают");
     }
@@ -207,16 +212,15 @@ public class HttpTaskManagerTasksTest { //для первого ревью от�
                 Status.NEW,
                 Duration.ofMinutes(30),
                 LocalDateTime.of(2024, 5, 2, 15, 0));
-        task1.setId(1);
 
-        manager.createTask(task1);
+        int taskId = manager.createTask(task1);
 
         Task task2 = new Task("Task1 name updated",
                 "Task1 description updated",
                 Status.NEW,
                 Duration.ofMinutes(30),
                 LocalDateTime.of(2024, 5, 2, 16, 0));
-        task2.setId(1);
+        task2.setId(taskId);
 
         // конвертируем её в JSON
 
@@ -233,9 +237,9 @@ public class HttpTaskManagerTasksTest { //для первого ревью от�
         assertEquals(201, response.statusCode());
 
         assertEquals("Task1 name updated",
-                manager.getTaskById(1).getName(),
+                manager.getTaskById(taskId).getName(),
                 "Имя задачи не равно ожидаемому после обновления");
-        assertTrue(Task.taskFieldsEquals(task2, manager.getTaskById(1)), "Задачи не совпадают");
+        assertTrue(Task.taskFieldsExceptIdEquals(task2, manager.getTaskById(taskId)), "Задачи не совпадают");
     }
 
     @Test
@@ -266,10 +270,7 @@ public class HttpTaskManagerTasksTest { //для первого ревью от�
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/tasks/2");
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(url)
-                .DELETE()
-                .build();
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
 
         // отправляем request и получаем response
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

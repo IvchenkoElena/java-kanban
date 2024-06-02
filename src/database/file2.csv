@@ -1,4 +1,3 @@
 id,type,name,status,description,start,duration,end,epic
-1,EPIC,Ремонт2,NEW,Сделать ремонт2, , , 
-2,EPIC,Ремонт2,NEW,Сделать ремонт2, , , 
-3,SUBTASK,Ремонт2,NEW,Сделать ремонт2, , , ,2
+1,EPIC,Test,NEW,Testing task,2024-05-01 12:20,5,2024-05-01 12:25
+2,SUBTASK,Test,NEW,Testing task,2024-05-01 12:20,5,2024-05-01 12:25,1

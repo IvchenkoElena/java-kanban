@@ -23,6 +23,28 @@ public class Main {
         //final TaskManager taskManager = Managers.getInMemoryDefault();
         final TaskManager taskManager = Managers.getDefault(file);
 
+
+        Epic epic = new Epic("Тестовый эпик", "Описание");
+        int epicId = taskManager.createEpic(epic);
+
+        Subtask subtask1 = new Subtask("Test 1", "Testing task 1",
+                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12,20), epicId);
+        int subtask1Id = taskManager.createSubtask(subtask1);
+        System.out.println(subtask1);
+        Subtask subtask2 = new Subtask("Test 1", "Testing task 1",
+                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12,20), epicId);
+        subtask2.setId(subtask1Id);
+        System.out.println(subtask2);
+
+        if (Subtask.subtaskFieldsExceptIdEquals(subtask1, subtask2)) {
+            System.out.println("ок");
+        } else {
+            System.out.println("not ок");
+        }
+
+
+
+
         Task tasktest = new Task("Задача 18", "Вынести мусор");
         System.out.println(tasktest);
 
