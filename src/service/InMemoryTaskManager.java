@@ -186,6 +186,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int createEpic(Epic epic) {
         epic.setId(generateId());
+        epic.setMySubtasksIdList(new ArrayList<>());
         epics.put(epic.getId(), epic);
         determineEpicParameters(generatedId);
         return epic.getId();
@@ -249,6 +250,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int createSubtask(Subtask subtask) {
+        if (!epics.containsKey(subtask.getMyEpicId())) {
+            System.out.println("Новая подзадача не может быть создана, нет такого эпика");
+            throw new NotFoundException("Новая подзадача не может быть создана, нет такого эпика");
+        }
         if (subtask.getStartTime() != null && subtask.getEndTime() != null) {
             if (getPrioritizedTasks().stream()
                     .noneMatch(t -> isTimeCross(t, subtask))) {
@@ -270,11 +275,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         if (subtask == null) {
-            // а почему я не проверяю на null в других методах поданные задачи?
-            // может тоже надо исключение?
-            return;
+            throw new NotFoundException("Передана пустая подзадача"); // эта проверка лишняя? такого не может произойти?
+            // Или наоборот надо добавить подобные проверки в другие методы тоже?
         }
         if (subtasks.containsKey(subtask.getId())) {
+            if (!epics.containsKey(subtask.getMyEpicId())) {
+                System.out.println("Подзадача c ID " + subtask.getId() + " не может быть обновлена, нет такого эпика");
+                throw new NotFoundException("Подзадача c ID " + subtask.getId() + " не может быть обновлена, нет такого эпика");
+            }
             Subtask oldSubtask = subtasks.get(subtask.getId());
             if (subtask.getStartTime() != null && subtask.getEndTime() != null) {
                 if (getPrioritizedTasks().stream()

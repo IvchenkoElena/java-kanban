@@ -1,4 +1,4 @@
 id,type,name,status,description,start,duration,end,epic
-1,TASK,Ремонт3,NEW,Сделать ремонт3, , , 
-2,TASK,New,NEW,Сделать ремонт3, , , 
-3,TASK,New2,DONE,Сделать ремонт3, , , 
+1,EPIC,Ремонт2,NEW,Сделать ремонт2, , , 
+2,EPIC,Ремонт2,NEW,Сделать ремонт2, , , 
+3,SUBTASK,Ремонт2,NEW,Сделать ремонт2, , , ,2

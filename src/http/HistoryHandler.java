@@ -1,15 +1,14 @@
 package http;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import model.Task;
 import service.TaskManager;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
+
+import static http.HttpTaskServer.getGson;
 
 class HistoryHandler extends BaseHttpHandler {
     private final TaskManager taskManager;
@@ -22,11 +21,7 @@ class HistoryHandler extends BaseHttpHandler {
     public void handle(HttpExchange httpExchange) throws IOException {
         String method = httpExchange.getRequestMethod();
         System.out.println("Началась обработка " + method + " /history запроса от клиента.");
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .create();
+        Gson gson = getGson();
         String response;
         if (method.equals("GET")) {
             List<Task> history = taskManager.getHistoryManager().getHistory();

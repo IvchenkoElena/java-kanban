@@ -1,7 +1,6 @@
 package http;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import model.Subtask;
@@ -11,9 +10,9 @@ import service.TaskManager;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
+
+import static http.HttpTaskServer.getGson;
 
 class SubtasksHandler extends BaseHttpHandler {
     private final TaskManager taskManager;
@@ -31,11 +30,7 @@ class SubtasksHandler extends BaseHttpHandler {
         String response;
         int id;
 
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .create();
+        Gson gson = getGson();
 
         switch (method) {
             case "GET":
@@ -77,6 +72,10 @@ class SubtasksHandler extends BaseHttpHandler {
                         sendOk(httpExchange, "Подзадача с Id " + givenId + " успешно создана");
                     } catch (IntersectionException e) {
                         sendHasIntersections(httpExchange, e.getMessage());
+                    } catch (NotFoundException e) {
+                        sendNotFound(httpExchange, e.getMessage());
+                    } catch (Exception e) {
+                        send500Exception(httpExchange);
                     }
                 } else {
                     try {
@@ -86,6 +85,8 @@ class SubtasksHandler extends BaseHttpHandler {
                         sendNotFound(httpExchange, e.getMessage());
                     } catch (IntersectionException e) {
                         sendHasIntersections(httpExchange, e.getMessage());
+                    } catch (Exception e) {
+                        send500Exception(httpExchange);
                     }
                 }
                 break;

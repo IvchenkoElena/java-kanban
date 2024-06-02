@@ -1,7 +1,6 @@
 package http;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import model.Task;
@@ -11,9 +10,9 @@ import service.TaskManager;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
+
+import static http.HttpTaskServer.getGson;
 
 class TasksHandler extends BaseHttpHandler {
     private final TaskManager taskManager;
@@ -31,11 +30,7 @@ class TasksHandler extends BaseHttpHandler {
         String response;
         int id;
 
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .create();
+        Gson gson = getGson();
 
         switch (method) {
             case "GET":
