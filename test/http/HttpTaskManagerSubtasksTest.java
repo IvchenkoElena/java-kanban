@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import model.Epic;
 import model.Status;
 import model.Subtask;
-import model.Task;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
@@ -28,7 +27,9 @@ public class HttpTaskManagerSubtasksTest {
     // создаём экземпляр InMemoryTaskManager
     TaskManager manager = new InMemoryTaskManager();
     // передаём его в качестве аргумента в конструктор HttpTaskServer
-    HttpTaskServer taskServer = new HttpTaskServer(manager);
+    HttpTaskServer taskServer = new HttpTaskServer(manager);//тут подчеркивается предупреждение
+    // Instantiation of utility class 'HttpTaskServer'
+    // но я не знаю как по-другому можно вызвать нужный конструктор
     Gson gson = HttpTaskServer.getGson();
 
     public HttpTaskManagerSubtasksTest() {
@@ -59,7 +60,7 @@ public class HttpTaskManagerSubtasksTest {
         int epicId = manager.createEpic(epic);
 
         Subtask subtask = new Subtask("Test", "Testing task",
-                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12,20), epicId);
+                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12, 20), epicId);
         // конвертируем её в JSON
         String taskJson = gson.toJson(subtask);
 
@@ -90,11 +91,11 @@ public class HttpTaskManagerSubtasksTest {
         int epicId = manager.createEpic(epic);
 
         Subtask subtask1 = new Subtask("Test 1", "Testing task 1",
-                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12,20), epicId);
+                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12, 20), epicId);
         Subtask subtask2 = new Subtask("Test 2", "Testing task 2",
-                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12,30), epicId);
+                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12, 30), epicId);
         Subtask subtask3 = new Subtask("Test 3", "Testing task 3",
-                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12,40), epicId);
+                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12, 40), epicId);
         manager.createSubtask(subtask1);
         manager.createSubtask(subtask2);
         manager.createSubtask(subtask3);
@@ -128,10 +129,10 @@ public class HttpTaskManagerSubtasksTest {
         int epicId = manager.createEpic(epic);
 
         Subtask subtask1 = new Subtask("Test 1", "Testing task 1",
-                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12,20), epicId);
+                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12, 20), epicId);
         int subtask1Id = manager.createSubtask(subtask1);
         Subtask subtask2 = new Subtask("Test 2", "Testing task 2",
-                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12,30), epicId);
+                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12, 30), epicId);
         int subtask2Id = manager.createSubtask(subtask2);
 
         // создаём HTTP-клиент и запрос
@@ -199,11 +200,11 @@ public class HttpTaskManagerSubtasksTest {
         int epicId = manager.createEpic(epic);
 
         Subtask subtask1 = new Subtask("Test 1", "Testing task 1",
-                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12,20), epicId);
+                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12, 20), epicId);
         int subtaskId = manager.createSubtask(subtask1);
 
         Subtask subtask2 = new Subtask("Test 1 updated", "Testing task 1 updated",
-                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12,20), epicId);
+                Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12, 20), epicId);
         subtask2.setId(subtaskId);
 
         // конвертируем её в JSON
@@ -222,7 +223,7 @@ public class HttpTaskManagerSubtasksTest {
         assertEquals("Test 1 updated",
                 manager.getSubtaskById(subtaskId).getName(),
                 "Имя подзадачи не равно ожидаемому после обновления");
-        assertTrue(Task.taskFieldsExceptIdEquals(subtask2, manager.getSubtaskById(subtaskId)), "Подзадачи не совпадают");
+        assertTrue(Subtask.subtaskFieldsExceptIdEquals(subtask2, manager.getSubtaskById(subtaskId)), "Поля подзадач не совпадают");
     }
 
     @Test

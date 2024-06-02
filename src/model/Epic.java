@@ -45,4 +45,18 @@ public class Epic extends Task {
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
+
+    public static boolean epicsFieldsExceptIdEquals(Epic epic1, Epic epic2) {
+        return epic1.getName().equals(epic2.getName()) &&
+                epic1.getDescription().equals(epic2.getDescription()) &&
+                epic1.getStatus().equals(epic2.getStatus()) &&
+                epic1.getDuration().equals(epic2.getDuration()) &&
+                epic1.getMySubtasksIdList().equals(epic2.getMySubtasksIdList()) && //?
+                epic1.getStartTime().equals(epic2.getStartTime());
+    }
+
+    public static boolean epicsNameAndDescriptionFieldsEquals(Epic epic1, Epic epic2) {
+        return epic1.getName().equals(epic2.getName()) &&
+                epic1.getDescription().equals(epic2.getDescription());
+    }
 }
