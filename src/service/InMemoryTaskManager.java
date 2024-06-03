@@ -99,7 +99,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistoryList() {
-        return getHistoryManager().getHistory();
+        return historyManager.getHistory();
     }
 
     @Override
@@ -107,8 +107,7 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(prioritizedTasksSet);
     }
 
-    @Override
-    public int generateId() {
+    protected int generateId() {
         return ++generatedId;
     }
 

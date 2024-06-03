@@ -14,8 +14,6 @@ public interface TaskManager {
 
     List<Task> getPrioritizedTasks();
 
-    int generateId();
-
     int createTask(Task task);
 
     void updateTask(Task task);

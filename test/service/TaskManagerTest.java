@@ -15,13 +15,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
     T taskManager;
 
     @Test
-    void generateId() {
-        int id1 = taskManager.generateId();
-        int id2 = taskManager.generateId();
-        assertEquals(id1 + 1, id2, "ID должен увеличиться на 1");
-    }
-
-    @Test
     void createdTaskExists() {
         Task task = new Task("Test addNewTask", "Test addNewTask description");
         final int taskId = taskManager.createTask(task);
@@ -282,7 +275,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void deleteNotExistedSubtaskById() {
         assertThrows(NotFoundException.class, () -> taskManager.deleteSubtaskById(1));
     }
-
 
 
 }

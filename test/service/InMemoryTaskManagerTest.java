@@ -20,6 +20,13 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
+    void generateId() {
+        int id1 = taskManager.createTask(new Task("Name", "Description"));
+        int id2 = taskManager.createTask(new Task("Name", "Description"));
+        assertEquals(id1 + 1, id2, "ID должен увеличиться на 1");
+    }
+
+    @Test
     void determineEpicStatusAllSubtasksNew() {
 
         Epic epic1 = new Epic("Эпик1", "Описание эпика1");
