@@ -28,8 +28,7 @@ class PrioritizedHandler extends BaseHttpHandler {
             response = gson.toJson(prioritizedTasks);
             sendText(httpExchange, response);
         } else {
-            response = "Вы использовали какой-то другой метод!";
-            sendBadRequest(httpExchange, response);
+            sendMethodNotAllowed(httpExchange);
         }
     }
 }

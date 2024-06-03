@@ -27,28 +27,20 @@ public class HttpTaskManagerHistoryTest {
     // создаём экземпляр InMemoryTaskManager
     TaskManager manager = new InMemoryTaskManager();
     // передаём его в качестве аргумента в конструктор HttpTaskServer
-    HttpTaskServer taskServer = new HttpTaskServer(manager); //тут подчеркивается предупреждение
-    // Instantiation of utility class 'HttpTaskServer'
-    // но я не знаю как по-другому можно вызвать нужный конструктор
+    HttpTaskServer taskServer = new HttpTaskServer(manager);
     Gson gson = HttpTaskServer.getGson();
-
-    public HttpTaskManagerHistoryTest() { //зачем мы тут во всех тестах пишем конструктор? Я взяла это из примера в ТЗ,
-        // но не понимаю зачем он нужен, если он пустой. или в него надо инициализацию полей вынести?
-    }
 
     @BeforeEach
     public void setUp() {
         manager.deleteAllTasks();
         manager.deleteAllSubtasks();
         manager.deleteAllEpics();
-        //taskServer.start(); //было предупреждение, поменяла на вызов через указание класса, или так не надо было?
-        HttpTaskServer.start();
+        taskServer.start();
     }
 
     @AfterEach
     public void shutDown() {
-        //taskServer.stop();
-        HttpTaskServer.stop();
+        taskServer.stop();
     }
 
     @Test

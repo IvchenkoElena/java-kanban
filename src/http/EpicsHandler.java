@@ -46,7 +46,7 @@ class EpicsHandler extends BaseHttpHandler {
                     } catch (Exception e) {
                         send500Exception(httpExchange);
                     }
-                } else {
+                } else if (pathParts.length == 2) {
                     try {
                         List<Epic> epicsList = taskManager.getAllEpicsList();
                         response = gson.toJson(epicsList);
@@ -54,6 +54,8 @@ class EpicsHandler extends BaseHttpHandler {
                     } catch (Exception e) {
                         send500Exception(httpExchange);
                     }
+                } else {
+                    sendBadRequest(httpExchange, "Передан некорректный url запроса");
                 }
                 break;
             case "POST":
@@ -62,7 +64,7 @@ class EpicsHandler extends BaseHttpHandler {
                 try {
                     userEpic = gson.fromJson(body, Epic.class);
                 } catch (JsonSyntaxException e) {
-                    sendNotFound(httpExchange, "Некорректный ввод данных для создания Epic");
+                    sendNotFound(httpExchange, "Некорректный ввод данных в теле запроса для создания Epic");
                     break;
                 }
                 id = userEpic.getId();
@@ -72,6 +74,8 @@ class EpicsHandler extends BaseHttpHandler {
                         sendOk(httpExchange, "Эпик с Id " + givenId + " успешно создан");
                     } catch (IntersectionException e) {
                         sendHasIntersections(httpExchange, e.getMessage());
+                    } catch (Exception e) {
+                        send500Exception(httpExchange);
                     }
                 } else {
                     try {
@@ -81,6 +85,8 @@ class EpicsHandler extends BaseHttpHandler {
                         sendNotFound(httpExchange, e.getMessage());
                     } catch (IntersectionException e) {
                         sendHasIntersections(httpExchange, e.getMessage());
+                    } catch (Exception e) {
+                        send500Exception(httpExchange);
                     }
                 }
                 break;
@@ -95,13 +101,22 @@ class EpicsHandler extends BaseHttpHandler {
                         sendBadRequest(httpExchange, "Введен некорректный ID");
                     } catch (NotFoundException e) {
                         sendNotFound(httpExchange, "Эпик с id " + path.split("/")[2] + " не найден");
+                    } catch (Exception e) {
+                        send500Exception(httpExchange);
+                    }
+                } else if (pathParts.length == 2) {
+                    try {
+                        taskManager.deleteAllEpics();
+                        sendOk(httpExchange, "Все эпики удалены");
+                    } catch (Exception e) {
+                        send500Exception(httpExchange);
                     }
                 } else {
-                    send500Exception(httpExchange);
+                    sendBadRequest(httpExchange, "Передан некорректный url запроса");
                 }
                 break;
             default:
-                sendBadRequest(httpExchange, "Вы использовали какой-то другой метод!");
+                sendMethodNotAllowed(httpExchange);
         }
     }
 }

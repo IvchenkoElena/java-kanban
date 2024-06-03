@@ -14,9 +14,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class HttpTaskServer {
-    private static final int PORT = 8080;
-    private static TaskManager taskManager;
-    private static HttpServer httpServer;
+    private final int PORT = 8080;
+    private final TaskManager taskManager;
+    private HttpServer httpServer;
     private static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
@@ -28,10 +28,10 @@ public class HttpTaskServer {
     }
 
     public HttpTaskServer(TaskManager taskManager) {
-       this.taskManager = taskManager;
+        this.taskManager = taskManager;
     }
 
-    public static void start() {
+    public void start() {
         try {
             httpServer = HttpServer.create();
             httpServer.bind(new InetSocketAddress(PORT), 0);
@@ -48,7 +48,7 @@ public class HttpTaskServer {
         System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
     }
 
-    public static void stop() {
+    public void stop() {
         httpServer.stop(0);
         System.out.println("HTTP-сервер остановлен на " + PORT + " порту");
     }
@@ -58,6 +58,6 @@ public class HttpTaskServer {
         TaskManager taskManager = Managers.getDefault(file);
         //TaskManager taskManager = new InMemoryTaskManager();
         HttpTaskServer taskServer = new HttpTaskServer(taskManager);
-        start();
+        taskServer.start();
     }
 }

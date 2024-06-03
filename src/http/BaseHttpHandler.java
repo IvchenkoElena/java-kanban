@@ -6,11 +6,7 @@ import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-class BaseHttpHandler implements HttpHandler {
-
-    @Override
-    public void handle(HttpExchange httpExchange) throws IOException {
-    }
+abstract class BaseHttpHandler implements HttpHandler {
 
     protected void writeResponse(HttpExchange h, String text, int code) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);
@@ -37,6 +33,12 @@ class BaseHttpHandler implements HttpHandler {
 
     protected void sendNotFound(HttpExchange h, String text) throws IOException {
         int code = 404;
+        writeResponse(h, text, code);
+    }
+
+    protected void sendMethodNotAllowed(HttpExchange h) throws IOException {
+        String text = "Вы использовали некорректный метод";
+        int code = 405;
         writeResponse(h, text, code);
     }
 

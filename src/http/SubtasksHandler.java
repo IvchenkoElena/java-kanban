@@ -46,7 +46,7 @@ class SubtasksHandler extends BaseHttpHandler {
                     } catch (Exception e) {
                         send500Exception(httpExchange);
                     }
-                } else {
+                } else if (pathParts.length == 2) {
                     try {
                         List<Subtask> subtasksList = taskManager.getAllSubtasksList();
                         response = gson.toJson(subtasksList);
@@ -54,6 +54,8 @@ class SubtasksHandler extends BaseHttpHandler {
                     } catch (Exception e) {
                         send500Exception(httpExchange);
                     }
+                } else {
+                    sendBadRequest(httpExchange, "Передан некорректный url запроса");
                 }
                 break;
             case "POST":
@@ -62,7 +64,7 @@ class SubtasksHandler extends BaseHttpHandler {
                 try {
                     userSubtask = gson.fromJson(body, Subtask.class);
                 } catch (JsonSyntaxException e) {
-                    sendNotFound(httpExchange, "Некорректный ввод данных для создания Subtask");
+                    sendNotFound(httpExchange, "Некорректный ввод данных в теле запроса для создания Subtask");
                     break;
                 }
                 id = userSubtask.getId();
@@ -101,13 +103,22 @@ class SubtasksHandler extends BaseHttpHandler {
                         sendBadRequest(httpExchange, "Введен некорректный ID");
                     } catch (NotFoundException e) {
                         sendNotFound(httpExchange, "Подзадача с id " + path.split("/")[2] + " не найдена");
+                    } catch (Exception e) {
+                        send500Exception(httpExchange);
+                    }
+                } else if (pathParts.length == 2) {
+                    try {
+                        taskManager.deleteAllSubtasks();
+                        sendOk(httpExchange, "Все подзадачи удалены");
+                    } catch (Exception e) {
+                        send500Exception(httpExchange);
                     }
                 } else {
-                    send500Exception(httpExchange);
+                    sendBadRequest(httpExchange, "Передан некорректный url запроса");
                 }
                 break;
             default:
-                sendBadRequest(httpExchange, "Вы использовали какой-то другой метод!");
+                sendMethodNotAllowed(httpExchange);
         }
     }
 }

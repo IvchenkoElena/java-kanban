@@ -14,6 +14,7 @@ import java.util.List;
 
 import static http.HttpTaskServer.getGson;
 
+
 class TasksHandler extends BaseHttpHandler {
     private final TaskManager taskManager;
 
@@ -46,7 +47,7 @@ class TasksHandler extends BaseHttpHandler {
                     } catch (Exception e) {
                         send500Exception(httpExchange);
                     }
-                } else {
+                } else if (pathParts.length == 2) {
                     try {
                         List<Task> tasksList = taskManager.getAllTasksList();
                         response = gson.toJson(tasksList);
@@ -54,6 +55,8 @@ class TasksHandler extends BaseHttpHandler {
                     } catch (Exception e) {
                         send500Exception(httpExchange);
                     }
+                } else {
+                    sendBadRequest(httpExchange, "Передан некорректный url запроса");
                 }
                 break;
             case "POST":
@@ -62,7 +65,7 @@ class TasksHandler extends BaseHttpHandler {
                 try {
                     userTask = gson.fromJson(body, Task.class);
                 } catch (JsonSyntaxException e) {
-                    sendNotFound(httpExchange, "Некорректный ввод данных для создания Task");
+                    sendNotFound(httpExchange, "Некорректный ввод данных в теле запроса для создания Task");
                     //sendNotFound(httpExchange, "Некорректный ввод данных для создания Task" + e.getMessage()); //хотела еще добавить сообщение от exception,
                     // но тогда в предыдущей строке удаляются пробелы, не нашла как лечить
                     break;
@@ -74,6 +77,8 @@ class TasksHandler extends BaseHttpHandler {
                         sendOk(httpExchange, "Задача с Id " + givenId + " успешно создана");
                     } catch (IntersectionException e) {
                         sendHasIntersections(httpExchange, e.getMessage());
+                    } catch (Exception e) {
+                        send500Exception(httpExchange);
                     }
                 } else {
                     try {
@@ -83,6 +88,8 @@ class TasksHandler extends BaseHttpHandler {
                         sendNotFound(httpExchange, e.getMessage());
                     } catch (IntersectionException e) {
                         sendHasIntersections(httpExchange, e.getMessage());
+                    } catch (Exception e) {
+                        send500Exception(httpExchange);
                     }
                 }
                 break;
@@ -97,13 +104,22 @@ class TasksHandler extends BaseHttpHandler {
                         sendBadRequest(httpExchange, "Введен некорректный ID");
                     } catch (NotFoundException e) {
                         sendNotFound(httpExchange, "Задача с id " + path.split("/")[2] + " не найдена");
+                    } catch (Exception e) {
+                        send500Exception(httpExchange);
+                    }
+                } else if (pathParts.length == 2) {
+                    try {
+                        taskManager.deleteAllTasks();
+                        sendText(httpExchange, "Все задачи удалены");
+                    } catch (Exception e) {
+                        send500Exception(httpExchange);
                     }
                 } else {
-                    send500Exception(httpExchange);
+                    sendBadRequest(httpExchange, "Передан некорректный url запроса");
                 }
                 break;
             default:
-                sendBadRequest(httpExchange, "Вы использовали какой-то другой метод!");
+                sendMethodNotAllowed(httpExchange);
         }
     }
 }

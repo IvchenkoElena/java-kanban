@@ -10,6 +10,8 @@ public interface TaskManager {
 
     HistoryManager getHistoryManager();
 
+    List<Task> getHistoryList();
+
     List<Task> getPrioritizedTasks();
 
     int generateId();

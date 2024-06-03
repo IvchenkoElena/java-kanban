@@ -24,12 +24,11 @@ class HistoryHandler extends BaseHttpHandler {
         Gson gson = getGson();
         String response;
         if (method.equals("GET")) {
-            List<Task> history = taskManager.getHistoryManager().getHistory();
+            List<Task> history = taskManager.getHistoryList();
             response = gson.toJson(history);
             sendText(httpExchange, response);
         } else {
-            response = "Вы использовали какой-то другой метод!";
-            sendBadRequest(httpExchange, response);
+            sendMethodNotAllowed(httpExchange);
         }
     }
 }

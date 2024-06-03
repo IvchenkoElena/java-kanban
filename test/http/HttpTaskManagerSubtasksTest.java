@@ -27,13 +27,8 @@ public class HttpTaskManagerSubtasksTest {
     // создаём экземпляр InMemoryTaskManager
     TaskManager manager = new InMemoryTaskManager();
     // передаём его в качестве аргумента в конструктор HttpTaskServer
-    HttpTaskServer taskServer = new HttpTaskServer(manager);//тут подчеркивается предупреждение
-    // Instantiation of utility class 'HttpTaskServer'
-    // но я не знаю как по-другому можно вызвать нужный конструктор
+    HttpTaskServer taskServer = new HttpTaskServer(manager);
     Gson gson = HttpTaskServer.getGson();
-
-    public HttpTaskManagerSubtasksTest() {
-    }
 
     static class SubtaskListTypeToken extends TypeToken<List<Subtask>> {
     }
@@ -43,14 +38,12 @@ public class HttpTaskManagerSubtasksTest {
         manager.deleteAllTasks();
         manager.deleteAllSubtasks();
         manager.deleteAllEpics();
-        //taskServer.start();
-        HttpTaskServer.start();
+        taskServer.start();
     }
 
     @AfterEach
     public void shutDown() {
-        //taskServer.stop();
-        HttpTaskServer.stop();
+        taskServer.stop();
     }
 
     @Test
@@ -130,7 +123,7 @@ public class HttpTaskManagerSubtasksTest {
 
         Subtask subtask1 = new Subtask("Test 1", "Testing task 1",
                 Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12, 20), epicId);
-        int subtask1Id = manager.createSubtask(subtask1);
+        manager.createSubtask(subtask1);
         Subtask subtask2 = new Subtask("Test 2", "Testing task 2",
                 Status.NEW, Duration.ofMinutes(5), LocalDateTime.of(2024, 5, 1, 12, 30), epicId);
         int subtask2Id = manager.createSubtask(subtask2);

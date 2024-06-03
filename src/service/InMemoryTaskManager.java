@@ -98,6 +98,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public List<Task> getHistoryList() {
+        return getHistoryManager().getHistory();
+    }
+
+    @Override
     public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(prioritizedTasksSet);
     }
@@ -300,7 +305,7 @@ public class InMemoryTaskManager implements TaskManager {
             subtasks.put(subtask.getId(), subtask);
             determineEpicParameters(subtask.getMyEpicId());
         } else {
-        throw new NotFoundException("Подзадача для обновления с id " + subtask.getId() + " не обнаружена");
+            throw new NotFoundException("Подзадача для обновления с id " + subtask.getId() + " не обнаружена");
         }
     }
 

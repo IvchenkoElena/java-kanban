@@ -27,13 +27,8 @@ public class HttpTaskManagerTasksTest {
     // создаём экземпляр InMemoryTaskManager
     TaskManager manager = new InMemoryTaskManager();
     // передаём его в качестве аргумента в конструктор HttpTaskServer
-    HttpTaskServer taskServer = new HttpTaskServer(manager); //тут подчеркивается предупреждение
-    // Instantiation of utility class 'HttpTaskServer'
-    // но я не знаю как по-другому можно вызвать нужный конструктор
+    HttpTaskServer taskServer = new HttpTaskServer(manager);
     Gson gson = HttpTaskServer.getGson();
-
-    public HttpTaskManagerTasksTest() {
-    }
 
     static class TaskListTypeToken extends TypeToken<List<Task>> {
     }
@@ -43,14 +38,12 @@ public class HttpTaskManagerTasksTest {
         manager.deleteAllTasks();
         manager.deleteAllSubtasks();
         manager.deleteAllEpics();
-        //taskServer.start(); //было предупреждение, поменяла на вызов через указание класса, или так не надо было?
-        HttpTaskServer.start();
+        taskServer.start();
     }
 
     @AfterEach
     public void shutDown() {
-        //taskServer.stop();
-        HttpTaskServer.stop();
+        taskServer.stop();
     }
 
     @Test
