@@ -3,6 +3,7 @@ import model.Status;
 import model.Subtask;
 import model.Task;
 import org.junit.jupiter.api.Test;
+import service.NotFoundException;
 import service.TaskManager;
 
 import java.util.List;
@@ -12,13 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 abstract class TaskManagerTest<T extends TaskManager> {
     T taskManager;
-
-    @Test
-    void generateId() {
-        int id1 = taskManager.generateId();
-        int id2 = taskManager.generateId();
-        assertEquals(id1 + 1, id2, "ID должен увеличиться на 1");
-    }
 
     @Test
     void createdTaskExists() {
@@ -43,6 +37,15 @@ abstract class TaskManagerTest<T extends TaskManager> {
         final Task newSavedTask = taskManager.getTaskById(taskId);
         assertEquals(newTask1, newSavedTask, "Обновленная задача не совпадает");
     }
+
+    @Test
+    void updateNotExistedOldTask() {
+        Task newTask1 = new Task("Задача 1", "Купить много продуктов");
+        newTask1.setStatus(Status.DONE);
+        newTask1.setId(1);
+        assertThrows(NotFoundException.class, () -> taskManager.updateTask(newTask1));
+    }
+
 
     @Test
     void getAllTasksList() {
@@ -86,6 +89,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
+    void getNotExistedTaskById() {
+        assertThrows(NotFoundException.class, () -> taskManager.getTaskById(1));
+    }
+
+    @Test
     void deleteTaskById() {
         Task task = new Task("Test Task", "Test Task description");
         final int taskId = taskManager.createTask(task);
@@ -97,9 +105,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         taskManager.deleteTaskById(taskId);
 
-        final Task newSavedTask = taskManager.getTaskById(taskId);
+        assertFalse(taskManager.getAllTasksList().contains(task), "Задача не удалилась.");
+    }
 
-        assertNull(newSavedTask, "Задача не удалилась.");
+    @Test
+    void deleteNotExistedTaskById() {
+        assertThrows(NotFoundException.class, () -> taskManager.deleteTaskById(1));
     }
 
     @Test
@@ -183,6 +194,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
+    void getNotExistedEpicById() {
+        assertThrows(NotFoundException.class, () -> taskManager.getEpicById(1));
+    }
+
+    @Test
     void deleteEpicById() {
         Epic epic1 = new Epic("Эпик1", "Описание эпика1");
         int epic1Id = taskManager.createEpic(epic1);
@@ -192,7 +208,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         taskManager.deleteEpicById(epic1Id);
 
-        assertNull(taskManager.getEpicById(epic1Id), "Задачи недолжно быть");
+        assertFalse(taskManager.getAllEpicsList().contains(epic1), "Задачи недолжно быть");
+    }
+
+    @Test
+    void deleteNotExistedEpicById() {
+        assertThrows(NotFoundException.class, () -> taskManager.deleteEpicById(1));
     }
 
     @Test
@@ -244,4 +265,16 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(1, epic1.getMySubtasksIdList().size(), "В списке должна быть одна подзадача.");
         assertEquals(savedSubtask2.getId(), epic1.getMySubtasksIdList().getFirst(), "Задачи не совпадают.");
     }
+
+    @Test
+    void getNotExistedSubtaskById() {
+        assertThrows(NotFoundException.class, () -> taskManager.getSubtaskById(1));
+    }
+
+    @Test
+    void deleteNotExistedSubtaskById() {
+        assertThrows(NotFoundException.class, () -> taskManager.deleteSubtaskById(1));
+    }
+
+
 }
